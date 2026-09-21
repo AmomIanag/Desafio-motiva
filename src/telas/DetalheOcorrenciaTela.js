@@ -7,15 +7,17 @@ import {
   Text,
   View,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import ContainerTela from "../components/ContainerTela";
+import CriticidadeBadge from "../components/CriticidadeBadge";
 import EstadoConteudo from "../components/EstadoConteudo";
+import LogoMarca from "../components/LogoMarca";
+import StatusBadge from "../components/StatusBadge";
 import { useOcorrencias } from "../context/OcorrenciasContext";
-import {
-  CRITICIDADES,
-  STATUS_OCORRENCIA,
-  selecionarOcorrenciaPorId,
-} from "../domain/ocorrenciaSelectors";
+import { selecionarOcorrenciaPorId } from "../domain/ocorrenciaSelectors";
+import { colors, radius, shadow, spacing, typography } from "../theme";
 
 function formatarData(valor) {
   if (!valor) {
@@ -29,6 +31,7 @@ function formatarData(valor) {
 }
 
 export default function DetalheOcorrenciaTela({ route, navigation }) {
+  const insets = useSafeAreaInsets();
   const { ocorrencias, carregando } = useOcorrencias();
   const ocorrenciaId = route?.params?.ocorrenciaId;
   const ocorrencia = useMemo(
@@ -36,11 +39,19 @@ export default function DetalheOcorrenciaTela({ route, navigation }) {
     [ocorrenciaId, ocorrencias],
   );
 
+  function abrirImagem() {
+    navigation.navigate("ImagemDrone", { ocorrenciaId: ocorrencia.id });
+  }
+
   if (carregando) {
     return (
       <ContainerTela>
-        <View style={styles.header}>
-          <Text style={styles.tituloHeader}>Detalhe da ocorrência</Text>
+        <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
+          <LogoMarca compacto />
+          <Text style={styles.tituloHeader} numberOfLines={1}>
+            Ocorrência
+          </Text>
+          <View style={styles.ladoHeader} />
         </View>
         <EstadoConteudo tipo="carregando" titulo="Carregando ocorrência" />
       </ContainerTela>
@@ -50,8 +61,12 @@ export default function DetalheOcorrenciaTela({ route, navigation }) {
   if (!ocorrencia) {
     return (
       <ContainerTela>
-        <View style={styles.header}>
-          <Text style={styles.tituloHeader}>Detalhe da ocorrência</Text>
+        <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
+          <LogoMarca compacto />
+          <Text style={styles.tituloHeader} numberOfLines={1}>
+            Ocorrência
+          </Text>
+          <View style={styles.ladoHeader} />
         </View>
         <EstadoConteudo
           tipo="erro"
@@ -64,15 +79,33 @@ export default function DetalheOcorrenciaTela({ route, navigation }) {
     );
   }
 
-  const criticidade = CRITICIDADES[ocorrencia.criticidade];
-
   return (
     <ContainerTela>
-      <View style={styles.header}>
-        <Pressable onPress={() => navigation.goBack()}>
-          <Text style={styles.voltar}>‹ Voltar</Text>
+      <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
+        <Pressable
+          onPress={() => navigation.goBack()}
+          hitSlop={8}
+          android_ripple={{ color: "rgba(255,255,255,0.16)" }}
+          style={({ pressed }) => [
+            styles.ladoHeader,
+            pressed && styles.pressionado,
+          ]}
+        >
+          <Ionicons name="chevron-back" size={22} color={colors.textInverse} />
+          <Text style={styles.voltar}>Voltar</Text>
         </Pressable>
-        <Text style={styles.tituloHeader}>Detalhe</Text>
+
+        <Text style={styles.tituloHeader} numberOfLines={1}>
+          {ocorrencia.rodovia} · KM {ocorrencia.km}
+        </Text>
+
+        <View style={[styles.ladoHeader, styles.ladoHeaderDireito]}>
+          <Image
+            source={require("../../assets/simbolo-motiva.png")}
+            style={styles.simboloHeader}
+            resizeMode="contain"
+          />
+        </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.conteudo}>
@@ -82,12 +115,8 @@ export default function DetalheOcorrenciaTela({ route, navigation }) {
           </Text>
           <Text style={styles.titulo}>{ocorrencia.titulo}</Text>
           <View style={styles.selos}>
-            <Text style={[styles.selo, { backgroundColor: criticidade.cor }]}>
-              {criticidade.rotulo}
-            </Text>
-            <Text style={styles.seloStatus}>
-              {STATUS_OCORRENCIA[ocorrencia.status]}
-            </Text>
+            <CriticidadeBadge criticidade={ocorrencia.criticidade} />
+            <StatusBadge status={ocorrencia.status} />
           </View>
         </View>
 
@@ -95,14 +124,21 @@ export default function DetalheOcorrenciaTela({ route, navigation }) {
           <Text style={styles.rotulo}>Descrição</Text>
           <Text style={styles.valor}>{ocorrencia.descricao}</Text>
 
-          <Text style={styles.rotulo}>Origem</Text>
-          <Text style={styles.valor}>{ocorrencia.origem}</Text>
-
-          <Text style={styles.rotulo}>Detectada em</Text>
-          <Text style={styles.valor}>{formatarData(ocorrencia.detectadaEm)}</Text>
+          <View style={styles.grade}>
+            <View style={styles.celula}>
+              <Text style={styles.rotulo}>Origem</Text>
+              <Text style={styles.valor}>{ocorrencia.origem}</Text>
+            </View>
+            <View style={styles.celula}>
+              <Text style={styles.rotulo}>Detectada em</Text>
+              <Text style={styles.valor}>
+                {formatarData(ocorrencia.detectadaEm)}
+              </Text>
+            </View>
+          </View>
 
           {ocorrencia.equipe ? (
-            <>
+            <View style={styles.blocoEquipe}>
               <Text style={styles.rotulo}>Equipe</Text>
               <Text style={styles.valor}>{ocorrencia.equipe.nome}</Text>
               <Text style={styles.valorSecundario}>
@@ -110,19 +146,27 @@ export default function DetalheOcorrenciaTela({ route, navigation }) {
                   ? `Acionada em ${formatarData(ocorrencia.equipe.acionadaEm)}`
                   : `Agendada para ${formatarData(ocorrencia.equipe.agendadaPara)}`}
               </Text>
-            </>
+            </View>
           ) : null}
         </View>
 
-        <Image source={ocorrencia.imagem} style={styles.imagem} resizeMode="cover" />
-
         <Pressable
-          style={styles.botaoImagem}
-          onPress={() =>
-            navigation.navigate("ImagemDrone", { ocorrenciaId: ocorrencia.id })
-          }
+          onPress={abrirImagem}
+          android_ripple={{ color: colors.brandSoft }}
+          style={({ pressed }) => [
+            styles.cardImagem,
+            pressed && styles.pressionado,
+          ]}
         >
-          <Text style={styles.textoBotao}>Ver imagem do drone</Text>
+          <Image
+            source={ocorrencia.imagem}
+            style={styles.imagem}
+            resizeMode="cover"
+          />
+          <View style={styles.legendaImagem}>
+            <Text style={styles.textoImagem}>Ver imagem do drone</Text>
+            <Ionicons name="chevron-forward" size={16} color={colors.brand} />
+          </View>
         </Pressable>
       </ScrollView>
     </ContainerTela>
@@ -131,64 +175,132 @@ export default function DetalheOcorrenciaTela({ route, navigation }) {
 
 const styles = StyleSheet.create({
   header: {
-    height: 76,
-    backgroundColor: "#5D20F5",
-    paddingHorizontal: 18,
+    backgroundColor: colors.brand,
+    paddingHorizontal: spacing.md,
+    paddingBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    minHeight: 52,
+  },
+  ladoHeader: {
+    minWidth: 72,
+    minHeight: 44,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  ladoHeaderDireito: {
+    justifyContent: "flex-end",
+  },
+  simboloHeader: {
+    width: 22,
+    height: 18,
+  },
+  voltar: {
+    ...typography.meta,
+    color: colors.textInverse,
+    fontWeight: "600",
+    marginLeft: 2,
+  },
+  tituloHeader: {
+    ...typography.title,
+    flex: 1,
+    color: colors.textInverse,
+    textAlign: "center",
+  },
+  conteudo: {
+    padding: spacing.md,
+    paddingBottom: spacing.xl,
+  },
+  cardTitulo: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: 16,
+    ...shadow.card,
+  },
+  km: {
+    ...typography.meta,
+    color: colors.textSecondary,
+    fontWeight: "600",
+  },
+  titulo: {
+    ...typography.title,
+    fontSize: 20,
+    color: colors.text,
+    marginTop: 6,
+  },
+  selos: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginTop: 12,
+  },
+  cardInformacoes: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: 16,
+    marginTop: spacing.md,
+  },
+  rotulo: {
+    ...typography.meta,
+    color: colors.textSecondary,
+    fontWeight: "600",
+    marginTop: 4,
+  },
+  valor: {
+    ...typography.body,
+    color: colors.text,
+    marginTop: 3,
+  },
+  valorSecundario: {
+    ...typography.meta,
+    color: colors.textSecondary,
+    marginTop: 3,
+  },
+  grade: {
+    flexDirection: "row",
+    gap: spacing.md,
+    marginTop: 12,
+  },
+  celula: {
+    flex: 1,
+  },
+  blocoEquipe: {
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+  },
+  cardImagem: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    overflow: "hidden",
+    marginTop: spacing.md,
+    ...shadow.card,
+  },
+  imagem: {
+    width: "100%",
+    height: 190,
+    backgroundColor: colors.surfaceMuted,
+  },
+  legendaImagem: {
+    minHeight: 44,
+    paddingHorizontal: 14,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
-  voltar: { color: "#FFFFFF", fontSize: 16, fontWeight: "bold" },
-  tituloHeader: { color: "#FFFFFF", fontSize: 22, fontWeight: "bold" },
-  conteudo: { padding: 20, paddingBottom: 36 },
-  cardTitulo: {
-    backgroundColor: "#F0F0F0",
-    borderRadius: 20,
-    padding: 18,
-    elevation: 4,
+  textoImagem: {
+    ...typography.meta,
+    color: colors.brand,
+    fontWeight: "600",
   },
-  km: { color: "#666666", fontSize: 13, fontWeight: "bold" },
-  titulo: { color: "#111111", fontSize: 22, fontWeight: "bold", marginTop: 5 },
-  selos: { flexDirection: "row", flexWrap: "wrap", marginTop: 14 },
-  selo: {
-    color: "#FFFFFF",
-    borderRadius: 14,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    marginRight: 8,
-    fontSize: 12,
-    fontWeight: "bold",
-    overflow: "hidden",
+  pressionado: {
+    opacity: 0.86,
   },
-  seloStatus: {
-    color: "#5D20F5",
-    backgroundColor: "#E6DCFF",
-    borderRadius: 14,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
-    fontSize: 12,
-    fontWeight: "bold",
-    overflow: "hidden",
-  },
-  cardInformacoes: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 18,
-    padding: 17,
-    marginTop: 18,
-    borderWidth: 1,
-    borderColor: "#E5E5E5",
-  },
-  rotulo: { color: "#5D20F5", fontSize: 12, fontWeight: "bold", marginTop: 10 },
-  valor: { color: "#333333", fontSize: 14, marginTop: 3 },
-  valorSecundario: { color: "#777777", fontSize: 12, marginTop: 3 },
-  imagem: { width: "100%", height: 170, borderRadius: 18, marginTop: 18 },
-  botaoImagem: {
-    height: 46,
-    backgroundColor: "#5D20F5",
-    borderRadius: 15,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 14,
-  },
-  textoBotao: { color: "#FFFFFF", fontSize: 14, fontWeight: "bold" },
 });

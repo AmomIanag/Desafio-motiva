@@ -9,7 +9,9 @@ import {
 
 import ContainerTela from "../components/ContainerTela";
 import EstadoConteudo from "../components/EstadoConteudo";
+import FeedbackBanner from "../components/FeedbackBanner";
 import HeaderApp from "../components/HeaderApp";
+import PrimaryButton from "../components/PrimaryButton";
 import { useOcorrencias } from "../context/OcorrenciasContext";
 import {
   indicadoresEstrategicosMock,
@@ -19,6 +21,14 @@ import {
   selecionarMetricasRelatorios,
   selecionarSerieMensal,
 } from "../domain/ocorrenciaSelectors";
+import {
+  colors,
+  radius,
+  shadow,
+  spacing,
+  typography,
+  visualCriticidade,
+} from "../theme";
 
 export default function ReportsTela({ aoSair }) {
   const [resumoPreparado, setResumoPreparado] = useState(false);
@@ -45,8 +55,8 @@ export default function ReportsTela({ aoSair }) {
 
   if (carregando) {
     return (
-      <ContainerTela>
-        <HeaderApp titulo="Relatórios & ROI" aoSair={aoSair} />
+      <ContainerTela edges={["left", "right"]}>
+        <HeaderApp titulo="Relatórios" aoSair={aoSair} />
         <EstadoConteudo tipo="carregando" titulo="Calculando indicadores" />
       </ContainerTela>
     );
@@ -61,9 +71,22 @@ export default function ReportsTela({ aoSair }) {
     }
   }
 
+  const kpis = [
+    { rotulo: "Total", valor: metricas.total },
+    { rotulo: "Resolvidas", valor: metricas.resolvidas },
+    { rotulo: "Abertas", valor: metricas.abertas },
+    { rotulo: "Taxa de resolução", valor: `${metricas.taxaResolucao}%` },
+  ];
+
+  const distribuicao = [
+    { id: "critico", rotulo: "Críticas", valor: metricas.distribuicao.critico },
+    { id: "atencao", rotulo: "Atenção", valor: metricas.distribuicao.atencao },
+    { id: "moderado", rotulo: "Moderadas", valor: metricas.distribuicao.moderado },
+  ];
+
   return (
-    <ContainerTela>
-      <HeaderApp titulo="Relatórios & ROI" aoSair={aoSair} />
+    <ContainerTela edges={["left", "right"]}>
+      <HeaderApp titulo="Relatórios" aoSair={aoSair} />
 
       <ScrollView contentContainerStyle={styles.conteudo}>
         <Text style={styles.subtitulo}>
@@ -81,7 +104,7 @@ export default function ReportsTela({ aoSair }) {
           />
         ) : null}
 
-        {feedback ? <Text style={styles.feedback}>{feedback}</Text> : null}
+        <FeedbackBanner mensagem={feedback} />
 
         {metricas.total === 0 ? (
           <EstadoConteudo
@@ -90,27 +113,24 @@ export default function ReportsTela({ aoSair }) {
           />
         ) : (
           <>
-            <View style={styles.indicadores}>
-              <View style={styles.cardIndicador}>
-                <Text style={styles.nomeIndicador}>Total</Text>
-                <Text style={styles.valor}>{metricas.total}</Text>
-              </View>
-              <View style={styles.cardIndicador}>
-                <Text style={styles.nomeIndicador}>Resolvidas</Text>
-                <Text style={styles.valor}>{metricas.resolvidas}</Text>
-              </View>
-              <View style={styles.cardIndicador}>
-                <Text style={styles.nomeIndicador}>Abertas</Text>
-                <Text style={styles.valor}>{metricas.abertas}</Text>
-              </View>
-              <View style={styles.cardIndicador}>
-                <Text style={styles.nomeIndicador}>Taxa de resolução</Text>
-                <Text style={styles.valor}>{metricas.taxaResolucao}%</Text>
-              </View>
+            <View style={styles.kpis}>
+              {kpis.map((item, indice) => (
+                <View
+                  key={item.rotulo}
+                  style={[
+                    styles.kpiCelula,
+                    indice % 2 === 0 && styles.kpiEsquerda,
+                    indice < 2 && styles.kpiTopo,
+                  ]}
+                >
+                  <Text style={styles.nomeIndicador}>{item.rotulo}</Text>
+                  <Text style={styles.valor}>{item.valor}</Text>
+                </View>
+              ))}
             </View>
 
             <View style={styles.grafico}>
-              <Text style={styles.tituloGrafico}>Ocorrências detectadas por mês</Text>
+              <Text style={styles.tituloBloco}>Ocorrências detectadas por mês</Text>
               <View style={styles.barras}>
                 {serieMensal.map((item) => (
                   <View key={item.mes} style={styles.coluna}>
@@ -118,7 +138,12 @@ export default function ReportsTela({ aoSair }) {
                     <View
                       style={[
                         styles.barra,
-                        { height: 20 + (item.quantidade / maiorValor) * 75 },
+                        {
+                          height: Math.max(
+                            12,
+                            (item.quantidade / maiorValor) * 88,
+                          ),
+                        },
                       ]}
                     />
                     <Text style={styles.mes}>{item.mes}</Text>
@@ -128,23 +153,43 @@ export default function ReportsTela({ aoSair }) {
             </View>
 
             <View style={styles.distribuicao}>
-              <Text style={styles.tituloDistribuicao}>Distribuição atual</Text>
-              <Text style={styles.textoDistribuicao}>
-                Críticas: {metricas.distribuicao.critico} · Atenção:{" "}
-                {metricas.distribuicao.atencao} · Moderadas:{" "}
-                {metricas.distribuicao.moderado}
-              </Text>
+              <Text style={styles.tituloBloco}>Distribuição atual</Text>
+              <View style={styles.chips}>
+                {distribuicao.map((item) => {
+                  const visual = visualCriticidade(item.id);
+
+                  return (
+                    <View
+                      key={item.id}
+                      style={[styles.chip, { backgroundColor: visual.soft }]}
+                    >
+                      <View
+                        style={[styles.ponto, { backgroundColor: visual.accent }]}
+                      />
+                      <Text style={[styles.textoChip, { color: visual.text }]}>
+                        {item.rotulo}: {item.valor}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
             </View>
 
             <View style={styles.estrategicosMock}>
               <Text style={styles.rotuloEstrategicos}>INDICADORES SIMULADOS</Text>
               <View style={styles.linhaEstrategicos}>
-                <Text style={styles.textoEstrategico}>
-                  Redução de custos {indicadoresEstrategicosMock.reducaoCustos}
-                </Text>
-                <Text style={styles.textoEstrategico}>
-                  Eficiência {indicadoresEstrategicosMock.eficienciaOperacional}
-                </Text>
+                <View style={styles.dadoSimulado}>
+                  <Text style={styles.metaSimulado}>Redução de custos</Text>
+                  <Text style={styles.valorSimulado}>
+                    {indicadoresEstrategicosMock.reducaoCustos}
+                  </Text>
+                </View>
+                <View style={styles.dadoSimulado}>
+                  <Text style={styles.metaSimulado}>Eficiência</Text>
+                  <Text style={styles.valorSimulado}>
+                    {indicadoresEstrategicosMock.eficienciaOperacional}
+                  </Text>
+                </View>
               </View>
             </View>
 
@@ -153,19 +198,11 @@ export default function ReportsTela({ aoSair }) {
               <Text style={styles.textoIa}>{previsaoEstrategica}</Text>
             </View>
 
-            <Pressable
-              style={[
-                styles.botaoResumo,
-                resumoPreparado && styles.botaoSucesso,
-              ]}
-              onPress={() => setResumoPreparado(true)}
-            >
-              <Text style={styles.textoResumo}>
-                {resumoPreparado
-                  ? "✓ Resumo de conformidade preparado"
-                  : "Preparar resumo de conformidade"}
-              </Text>
-            </Pressable>
+            <PrimaryButton onPress={() => setResumoPreparado(true)}>
+              {resumoPreparado
+                ? "Resumo de conformidade preparado"
+                : "Preparar resumo de conformidade"}
+            </PrimaryButton>
 
             {resumoPreparado ? (
               <View style={styles.previa}>
@@ -181,7 +218,10 @@ export default function ReportsTela({ aoSair }) {
 
         {!confirmarRestauracao ? (
           <Pressable
-            style={styles.linkRestaurar}
+            style={({ pressed }) => [
+              styles.linkRestaurar,
+              pressed && styles.pressionado,
+            ]}
             onPress={() => setConfirmarRestauracao(true)}
           >
             <Text style={styles.textoRestaurar}>Restaurar dados da demonstração</Text>
@@ -192,11 +232,17 @@ export default function ReportsTela({ aoSair }) {
               Restaurar todas as alterações operacionais?
             </Text>
             <View style={styles.acoesConfirmacao}>
-              <Pressable onPress={() => setConfirmarRestauracao(false)}>
+              <Pressable
+                onPress={() => setConfirmarRestauracao(false)}
+                style={styles.cancelarArea}
+              >
                 <Text style={styles.cancelar}>Cancelar</Text>
               </Pressable>
               <Pressable
-                style={styles.botaoRestaurar}
+                style={({ pressed }) => [
+                  styles.botaoRestaurar,
+                  pressed && styles.pressionado,
+                ]}
                 onPress={confirmarReset}
                 disabled={processandoId === "restaurar"}
               >
@@ -213,140 +259,239 @@ export default function ReportsTela({ aoSair }) {
 }
 
 const styles = StyleSheet.create({
-  conteudo: { flexGrow: 1, paddingHorizontal: 20, paddingBottom: 35 },
+  conteudo: {
+    flexGrow: 1,
+    paddingHorizontal: spacing.md,
+    paddingBottom: spacing.xl,
+  },
   subtitulo: {
-    color: "#666666",
-    fontSize: 12,
-    fontWeight: "bold",
+    ...typography.meta,
+    color: colors.textSecondary,
     marginTop: 12,
   },
-  feedback: {
-    color: "#087A36",
-    backgroundColor: "#E6F7ED",
-    borderRadius: 12,
-    padding: 10,
-    marginTop: 10,
-    fontSize: 12,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  indicadores: {
+  kpis: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
-    marginTop: 24,
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginTop: spacing.md,
+    overflow: "hidden",
+    ...shadow.card,
   },
-  cardIndicador: {
-    width: "48%",
-    height: 76,
-    backgroundColor: "#DDDDDD",
-    borderRadius: 18,
-    alignItems: "center",
+  kpiCelula: {
+    width: "50%",
+    minHeight: 84,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
     justifyContent: "center",
-    elevation: 5,
-    marginBottom: 12,
+    borderColor: colors.border,
   },
-  nomeIndicador: { color: "#111111", fontSize: 12, fontWeight: "bold" },
-  valor: { color: "#13A84D", fontSize: 25, fontWeight: "bold", marginTop: 3 },
-  grafico: {
-    height: 170,
-    marginTop: 10,
-    borderLeftWidth: 1,
+  kpiEsquerda: {
+    borderRightWidth: 1,
+  },
+  kpiTopo: {
     borderBottomWidth: 1,
-    borderColor: "#E0E0E0",
-    paddingHorizontal: 12,
-    paddingTop: 26,
   },
-  tituloGrafico: {
-    position: "absolute",
-    top: 0,
-    left: 8,
-    color: "#666666",
-    fontSize: 11,
-    fontWeight: "bold",
+  nomeIndicador: {
+    ...typography.meta,
+    color: colors.textSecondary,
+  },
+  valor: {
+    ...typography.kpi,
+    color: colors.text,
+    marginTop: 4,
+  },
+  grafico: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingHorizontal: 14,
+    paddingTop: 14,
+    paddingBottom: 10,
+    marginTop: spacing.md,
+    minHeight: 180,
+  },
+  tituloBloco: {
+    ...typography.sectionTitle,
+    color: colors.text,
+    marginBottom: 12,
   },
   barras: {
     flex: 1,
+    minHeight: 120,
     flexDirection: "row",
     alignItems: "flex-end",
     justifyContent: "space-around",
   },
-  coluna: { alignItems: "center", justifyContent: "flex-end" },
-  barra: { width: 10, backgroundColor: "#9BCFEB", borderRadius: 5 },
-  quantidadeBarra: { color: "#777777", fontSize: 9, marginBottom: 3 },
-  mes: { color: "#999999", fontSize: 9, marginTop: 5 },
-  distribuicao: {
-    backgroundColor: "#F0F0F0",
-    borderRadius: 16,
-    padding: 13,
-    marginTop: 15,
+  coluna: {
+    alignItems: "center",
+    justifyContent: "flex-end",
+    flex: 1,
   },
-  tituloDistribuicao: { color: "#222222", fontSize: 13, fontWeight: "bold" },
-  textoDistribuicao: { color: "#666666", fontSize: 12, marginTop: 5 },
-  estrategicosMock: {
-    backgroundColor: "#F3EEFF",
-    borderRadius: 16,
-    padding: 13,
-    marginTop: 12,
+  barra: {
+    width: 14,
+    backgroundColor: colors.brand,
+    borderRadius: 7,
   },
-  rotuloEstrategicos: { color: "#6B38C4", fontSize: 9, fontWeight: "bold" },
-  linhaEstrategicos: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
+  quantidadeBarra: {
+    ...typography.meta,
+    color: colors.textSecondary,
+    marginBottom: 4,
+  },
+  mes: {
+    ...typography.meta,
+    color: colors.textMuted,
     marginTop: 6,
   },
-  textoEstrategico: { color: "#333333", fontSize: 12, fontWeight: "bold" },
-  cardIa: {
-    minHeight: 84,
-    backgroundColor: "#7430E8",
-    borderRadius: 20,
-    justifyContent: "center",
-    paddingHorizontal: 13,
-    paddingVertical: 10,
-    marginTop: 16,
+  distribuicao: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: 14,
+    marginTop: spacing.md,
   },
-  rotuloMock: { color: "#DCCEFF", fontSize: 9, fontWeight: "bold" },
-  textoIa: { color: "#FFFFFF", fontSize: 15, fontWeight: "bold", marginTop: 4 },
-  botaoResumo: {
-    minHeight: 47,
-    backgroundColor: "#5B20BE",
-    borderRadius: 16,
-    justifyContent: "center",
-    paddingHorizontal: 12,
-    marginTop: 17,
+  chips: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.sm,
   },
-  botaoSucesso: { backgroundColor: "#16A94F" },
-  textoResumo: { color: "#FFFFFF", fontSize: 13, fontWeight: "bold" },
-  previa: {
-    backgroundColor: "#F5F5F5",
-    borderRadius: 14,
-    padding: 13,
+  chip: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: radius.pill,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  ponto: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    marginRight: 6,
+  },
+  textoChip: {
+    ...typography.meta,
+    fontWeight: "600",
+  },
+  estrategicosMock: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: 14,
+    marginTop: spacing.md,
+  },
+  rotuloEstrategicos: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: colors.brand,
+    letterSpacing: 0.4,
+  },
+  linhaEstrategicos: {
+    flexDirection: "row",
     marginTop: 10,
+    gap: spacing.md,
   },
-  tituloPrevia: { color: "#333333", fontSize: 13, fontWeight: "bold" },
-  textoPrevia: { color: "#666666", fontSize: 12, marginTop: 5 },
-  linkRestaurar: { alignItems: "center", paddingVertical: 14, marginTop: 15 },
-  textoRestaurar: { color: "#777777", fontSize: 11, textDecorationLine: "underline" },
-  confirmacao: {
-    backgroundColor: "#FFF4F4",
-    borderRadius: 14,
+  dadoSimulado: {
+    flex: 1,
+  },
+  metaSimulado: {
+    ...typography.meta,
+    color: colors.textSecondary,
+  },
+  valorSimulado: {
+    ...typography.cardTitle,
+    color: colors.text,
+    marginTop: 2,
+  },
+  cardIa: {
+    backgroundColor: colors.brandSoft,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.brandMuted,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    marginTop: spacing.md,
+  },
+  rotuloMock: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: colors.brand,
+    letterSpacing: 0.4,
+  },
+  textoIa: {
+    ...typography.body,
+    color: colors.text,
+    marginTop: 6,
+  },
+  previa: {
+    backgroundColor: colors.successSoft,
+    borderRadius: radius.sm,
     padding: 13,
-    marginTop: 16,
+    marginTop: spacing.sm,
   },
-  textoConfirmacao: { color: "#7A271A", fontSize: 12, textAlign: "center" },
+  tituloPrevia: {
+    ...typography.sectionTitle,
+    color: colors.text,
+  },
+  textoPrevia: {
+    ...typography.meta,
+    color: colors.textSecondary,
+    marginTop: 5,
+  },
+  linkRestaurar: {
+    alignItems: "center",
+    minHeight: 44,
+    justifyContent: "center",
+    marginTop: spacing.sm,
+  },
+  textoRestaurar: {
+    ...typography.meta,
+    color: colors.textMuted,
+    textDecorationLine: "underline",
+  },
+  confirmacao: {
+    backgroundColor: colors.criticalSoft,
+    borderRadius: radius.sm,
+    padding: 13,
+    marginTop: spacing.md,
+  },
+  textoConfirmacao: {
+    ...typography.meta,
+    color: colors.criticalText,
+    textAlign: "center",
+  },
   acoesConfirmacao: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10,
   },
-  cancelar: { color: "#666666", fontSize: 12, marginRight: 18 },
-  botaoRestaurar: {
-    backgroundColor: "#B42318",
-    borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 7,
+  cancelarArea: {
+    minHeight: 40,
+    justifyContent: "center",
+    marginRight: 18,
   },
-  textoBotaoRestaurar: { color: "#FFFFFF", fontSize: 12, fontWeight: "bold" },
+  cancelar: {
+    ...typography.meta,
+    color: colors.textSecondary,
+  },
+  botaoRestaurar: {
+    backgroundColor: colors.danger,
+    borderRadius: radius.sm,
+    minHeight: 36,
+    paddingHorizontal: 14,
+    justifyContent: "center",
+  },
+  textoBotaoRestaurar: {
+    ...typography.meta,
+    color: colors.textInverse,
+    fontWeight: "600",
+  },
+  pressionado: {
+    opacity: 0.84,
+  },
 });

@@ -1,20 +1,23 @@
 import React, { useState } from "react";
 import {
-  View,
   Text,
-  TextInput,
   Pressable,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from "react-native";
 
+import CampoTexto from "../components/CampoTexto";
 import ContainerTela from "../components/ContainerTela";
-import LogoMarca from "../components/LogoMarca";
+import FeedbackBanner from "../components/FeedbackBanner";
+import HeaderApp from "../components/HeaderApp";
+import PrimaryButton from "../components/PrimaryButton";
 import {
   buscarUsuario,
   salvarSessao,
 } from "../storage/authStorage";
+import { colors, spacing, typography } from "../theme";
 
 export default function TelaLogin({ navigation }) {
   const [email, setEmail] = useState("");
@@ -91,20 +94,25 @@ export default function TelaLogin({ navigation }) {
   }
 
   return (
-    <ContainerTela>
-      <View style={styles.header}>
-        <LogoMarca />
-      </View>
+    <ContainerTela style={styles.fundoAuth}>
+      <HeaderApp />
 
       <KeyboardAvoidingView
-        style={styles.conteudo}
+        style={styles.area}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <View style={styles.formulario}>
-          <TextInput
-            style={styles.input}
+        <ScrollView
+          contentContainerStyle={styles.conteudo}
+          keyboardShouldPersistTaps="handled"
+        >
+          <Text style={styles.titulo}>Entrar</Text>
+          <Text style={styles.subtitulo}>
+            Acesse o monitoramento operacional
+          </Text>
+
+          <CampoTexto
+            label="E-mail"
             placeholder="E-mail"
-            placeholderTextColor="#888888"
             value={email}
             onChangeText={(texto) => {
               setEmail(texto);
@@ -112,124 +120,80 @@ export default function TelaLogin({ navigation }) {
             }}
             keyboardType="email-address"
             autoCapitalize="none"
+            erro={erros.email}
           />
 
-          {erros.email ? (
-            <Text style={styles.erro}>{erros.email}</Text>
-          ) : null}
-
-          <TextInput
-            style={styles.input}
+          <CampoTexto
+            label="Senha"
             placeholder="Senha"
-            placeholderTextColor="#888888"
             value={senha}
             onChangeText={(texto) => {
               setSenha(texto);
               setErros({ ...erros, senha: "", geral: "" });
             }}
             secureTextEntry
+            erro={erros.senha}
           />
 
-          {erros.senha ? (
-            <Text style={styles.erro}>{erros.senha}</Text>
-          ) : null}
+          <FeedbackBanner mensagem={erros.geral} tipo="erro" />
 
-          {erros.geral ? (
-            <Text style={styles.erroGeral}>{erros.geral}</Text>
-          ) : null}
+          <PrimaryButton onPress={entrar} disabled={processando}>
+            {processando ? "Entrando..." : "Entrar"}
+          </PrimaryButton>
 
           <Pressable
-            style={[styles.botao, processando && styles.botaoDesabilitado]}
-            onPress={entrar}
-            disabled={processando}
+            onPress={() => navigation.navigate("Cadastro")}
+            style={({ pressed }) => [
+              styles.linkArea,
+              pressed && styles.pressionado,
+            ]}
           >
-            <Text style={styles.textoBotao}>
-              {processando ? "Entrando..." : "Entrar"}
-            </Text>
-          </Pressable>
-
-          <Pressable onPress={() => navigation.navigate("Cadastro")}>
             <Text style={styles.link}>Criar uma conta</Text>
           </Pressable>
-        </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </ContainerTela>
   );
 }
 
 const styles = StyleSheet.create({
-  header: {
-    height: 90,
-    backgroundColor: "#5D20F5",
-    justifyContent: "center",
-    paddingHorizontal: 18,
+  fundoAuth: {
+    backgroundColor: colors.surface,
   },
-
-  conteudo: {
+  area: {
     flex: 1,
-    alignItems: "center",
+  },
+  conteudo: {
+    flexGrow: 1,
     justifyContent: "center",
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.xl,
   },
-
-  formulario: {
-    width: "80%",
-    alignItems: "center",
+  titulo: {
+    ...typography.title,
+    fontSize: 22,
+    color: colors.text,
+    marginBottom: spacing.xs,
   },
-
-  input: {
-    width: "100%",
-    height: 48,
-    backgroundColor: "#EDEDED",
-    borderRadius: 15,
-    paddingHorizontal: 23,
-    fontSize: 18,
-    color: "#333333",
-    elevation: 4,
-    marginBottom:18,
-  },
-
-  erro: {
-    width: "100%",
-    color: "#D71920",
-    fontSize: 12,
-    marginTop: 5,
-    marginBottom: 10,
-    marginLeft: 7,
-  },
-
-  erroGeral: {
-    width: "100%",
-    color: "#D71920",
+  subtitulo: {
+    ...typography.body,
     fontSize: 13,
-    textAlign: "center",
-    marginTop: 13,
+    color: colors.textSecondary,
+    marginBottom: spacing.lg,
   },
-
-  botao: {
-    backgroundColor: "#5D20F5",
-    borderRadius: 13,
-    minWidth: 121,
-    height: 42,
+  linkArea: {
+    minHeight: 44,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 30,
-    marginTop: 20,
+    marginTop: spacing.sm,
   },
-
-  botaoDesabilitado: {
-    opacity: 0.65,
-  },
-
-  textoBotao: {
-    color: "#FFFFFF",
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-
   link: {
-    color: "#5D20F5",
-    fontSize: 14,
-    fontWeight: "bold",
-    marginTop: 17,
+    ...typography.body,
+    color: colors.brand,
+    fontWeight: "600",
+  },
+  pressionado: {
+    opacity: 0.8,
   },
 });

@@ -1,14 +1,23 @@
 import React from "react";
-import { View, Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import {
   Ionicons,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 
+import { colors } from "../theme";
+
+const ROTULOS = {
+  Dashboard: "Dashboard",
+  Mapa: "Mapa",
+  Alertas: "Alertas",
+  Relatorios: "Relatórios",
+};
+
 export default function TabBar({ state, descriptors, navigation, insets }) {
   function mostrarIcone(nomeRota, selecionada) {
-    const cor = "#FFFFFF";
-    const tamanho = selecionada ? 25 : 23;
+    const cor = selecionada ? colors.textInverse : "rgba(255,255,255,0.72)";
+    const tamanho = 22;
 
     if (nomeRota === "Dashboard") {
       return (
@@ -42,7 +51,7 @@ export default function TabBar({ state, descriptors, navigation, insets }) {
 
     return (
       <MaterialCommunityIcons
-        name="clipboard-text-clock-outline"
+        name={selecionada ? "clipboard-text" : "clipboard-text-outline"}
         size={tamanho}
         color={cor}
       />
@@ -54,7 +63,7 @@ export default function TabBar({ state, descriptors, navigation, insets }) {
       style={[
         styles.barra,
         {
-          height: 74 + (insets?.bottom ?? 0),
+          height: 58 + (insets?.bottom ?? 0),
           paddingBottom: insets?.bottom ?? 0,
         },
       ]}
@@ -75,27 +84,35 @@ export default function TabBar({ state, descriptors, navigation, insets }) {
         }
 
         const opcoes = descriptors[rota.key]?.options ?? {};
+        const rotulo = ROTULOS[rota.name] ?? rota.name;
 
         return (
           <Pressable
             key={rota.key}
-            style={styles.botao}
+            style={({ pressed }) => [
+              styles.botao,
+              pressed && styles.pressionado,
+            ]}
             onPress={abrirTela}
             onLongPress={() =>
               navigation.emit({ type: "tabLongPress", target: rota.key })
             }
             accessibilityRole="button"
             accessibilityState={selecionada ? { selected: true } : {}}
-            accessibilityLabel={opcoes.tabBarAccessibilityLabel ?? rota.name}
+            accessibilityLabel={opcoes.tabBarAccessibilityLabel ?? rotulo}
+            android_ripple={{ color: "rgba(255,255,255,0.12)" }}
           >
-            <View
+            {selecionada ? <View style={styles.indicador} /> : null}
+            {mostrarIcone(rota.name, selecionada)}
+            <Text
               style={[
-                styles.caixaIcone,
-                selecionada && styles.caixaSelecionada,
+                styles.label,
+                selecionada ? styles.labelAtivo : styles.labelInativo,
               ]}
+              numberOfLines={1}
             >
-              {mostrarIcone(rota.name, selecionada)}
-            </View>
+              {rotulo}
+            </Text>
           </Pressable>
         );
       })}
@@ -105,29 +122,40 @@ export default function TabBar({ state, descriptors, navigation, insets }) {
 
 const styles = StyleSheet.create({
   barra: {
-    height: 74,
-    backgroundColor: "#5D20F5",
+    height: 58,
+    backgroundColor: colors.brand,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
   },
-
   botao: {
     flex: 1,
     height: "100%",
     alignItems: "center",
     justifyContent: "center",
+    paddingTop: 6,
   },
-
-  caixaIcone: {
-    width: 38,
-    height: 38,
-    borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
+  indicador: {
+    position: "absolute",
+    top: 0,
+    width: 22,
+    height: 2,
+    borderRadius: 1,
+    backgroundColor: colors.textInverse,
   },
-
-  caixaSelecionada: {
-    backgroundColor: "rgba(255,255,255,0.13)",
+  label: {
+    fontSize: 11,
+    marginTop: 2,
+  },
+  labelAtivo: {
+    color: colors.textInverse,
+    fontWeight: "600",
+  },
+  labelInativo: {
+    color: "rgba(255,255,255,0.72)",
+    fontWeight: "400",
+  },
+  pressionado: {
+    opacity: 0.86,
   },
 });

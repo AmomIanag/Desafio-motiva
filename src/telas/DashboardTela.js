@@ -10,8 +10,10 @@ import {
 } from "react-native";
 
 import ContainerTela from "../components/ContainerTela";
+import CriticidadeBadge from "../components/CriticidadeBadge";
 import EstadoConteudo from "../components/EstadoConteudo";
 import HeaderApp from "../components/HeaderApp";
+import StatusBadge from "../components/StatusBadge";
 import { periodoClimatico } from "../data/mockData";
 import { useOcorrencias } from "../context/OcorrenciasContext";
 import {
@@ -19,6 +21,14 @@ import {
   selecionarContagemPorCriticidade,
   selecionarDestaqueMonitoramento,
 } from "../domain/ocorrenciaSelectors";
+import {
+  colors,
+  radius,
+  shadow,
+  spacing,
+  typography,
+  visualCriticidade,
+} from "../theme";
 
 export default function DashboardTela({ navigation, aoSair }) {
   const { ocorrencias, carregando, erro, recarregar } = useOcorrencias();
@@ -39,7 +49,7 @@ export default function DashboardTela({ navigation, aoSair }) {
 
   if (carregando) {
     return (
-      <ContainerTela>
+      <ContainerTela edges={["left", "right"]}>
         <HeaderApp titulo="Dashboard" aoSair={aoSair} />
         <EstadoConteudo
           tipo="carregando"
@@ -51,7 +61,7 @@ export default function DashboardTela({ navigation, aoSair }) {
   }
 
   return (
-    <ContainerTela>
+    <ContainerTela edges={["left", "right"]}>
       <HeaderApp titulo="Dashboard" aoSair={aoSair} />
 
       <ScrollView contentContainerStyle={styles.conteudo}>
@@ -73,91 +83,108 @@ export default function DashboardTela({ navigation, aoSair }) {
           />
         ) : (
           <>
-        <View style={styles.cardPeriodo}>
-          <View>
-            <Text style={styles.tituloPeriodo}>
-              Período: {periodoClimatico.nome}
-            </Text>
+            <View style={styles.cardPeriodo}>
+              <View style={styles.iconeClima}>
+                <Ionicons
+                  name="rainy-outline"
+                  size={22}
+                  color={colors.brand}
+                />
+              </View>
 
-            <Text style={styles.textoPeriodo}>
-              {periodoClimatico.descricao}
-            </Text>
-          </View>
-
-          <View style={styles.iconeClima}>
-            <Ionicons
-            name="rainy-outline"
-            size={43}
-            color="#FFFFFF"
-            />
-          </View>
-        </View>
-
-        <View style={styles.indicadores}>
-          {indicadores.map((item) => (
-            <Pressable
-              key={item.id}
-              style={[
-                styles.cardIndicador,
-                { backgroundColor: item.cor },
-              ]}
-              onPress={() =>
-                navigation.navigate("Alertas", {
-                  filtroInicial:
-                    item.id === "critico"
-                      ? "Crítico"
-                      : item.id === "atencao"
-                        ? "Atenção"
-                        : "Todos",
-                })
-              }
-            >
-              <Text style={styles.quantidade}>
-                {item.quantidade}
-              </Text>
-
-              <Text style={styles.nomeIndicador}>
-                {item.rotulo}
-              </Text>
-            </Pressable>
-          ))}
-        </View>
-
-        {destaque ? (
-          <Pressable
-            style={styles.monitoramento}
-            onPress={() =>
-              navigation.navigate("DetalheOcorrencia", {
-                ocorrenciaId: destaque.id,
-              })
-            }
-          >
-          <View style={styles.monitoramentoHeader}>
-            <Text style={styles.monitoramentoTitulo}>
-              Monitoramento Inteligente
-            </Text>
-
-            <Text style={styles.ia}>● IA Ativa</Text>
-          </View>
-
-          <View style={styles.monitoramentoConteudo}>
-            <Image
-              source={destaque.imagem}
-              style={styles.imagem}
-            />
-
-            <View style={styles.informacoes}>
-              <Text style={styles.drone}>
-                {destaque.origem} · KM {destaque.km}
-              </Text>
-
-              <Text style={styles.descricao}>
-                {destaque.titulo}
-              </Text>
+              <View style={styles.textoClima}>
+                <Text style={styles.tituloPeriodo}>
+                  Período: {periodoClimatico.nome}
+                </Text>
+                <Text style={styles.textoPeriodo}>
+                  {periodoClimatico.descricao}
+                </Text>
+              </View>
             </View>
-          </View>
-          </Pressable>
-        ) : null}
+
+            <View style={styles.visaoGeral}>
+              <Text style={styles.secaoTitulo}>Visão geral</Text>
+
+              <View style={styles.indicadores}>
+                {indicadores.map((item, indice) => {
+                  const visual = visualCriticidade(item.id);
+
+                  return (
+                    <Pressable
+                      key={item.id}
+                      android_ripple={{ color: colors.brandSoft }}
+                      style={({ pressed }) => [
+                        styles.cardIndicador,
+                        indice < indicadores.length - 1 && styles.indicadorDivisor,
+                        pressed && styles.pressionado,
+                      ]}
+                      onPress={() =>
+                        navigation.navigate("Alertas", {
+                          filtroInicial:
+                            item.id === "critico"
+                              ? "Crítico"
+                              : item.id === "atencao"
+                                ? "Atenção"
+                                : "Todos",
+                        })
+                      }
+                    >
+                      <View
+                        style={[styles.ponto, { backgroundColor: visual.accent }]}
+                      />
+                      <Text style={styles.quantidade}>{item.quantidade}</Text>
+                      <Text style={styles.nomeIndicador}>{item.rotulo}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+
+            {destaque ? (
+              <Pressable
+                style={({ pressed }) => [
+                  styles.monitoramento,
+                  pressed && styles.pressionado,
+                ]}
+                android_ripple={{ color: colors.brandSoft }}
+                onPress={() =>
+                  navigation.navigate("DetalheOcorrencia", {
+                    ocorrenciaId: destaque.id,
+                  })
+                }
+              >
+                <View style={styles.monitoramentoHeader}>
+                  <Text style={styles.secaoTitulo}>Monitoramento</Text>
+                  <Text style={styles.ia}>IA ativa</Text>
+                </View>
+
+                <View style={styles.monitoramentoConteudo}>
+                  <Image
+                    source={destaque.imagem}
+                    style={styles.imagem}
+                  />
+
+                  <View style={styles.informacoes}>
+                    <Text style={styles.drone}>
+                      {destaque.origem} · KM {destaque.km}
+                    </Text>
+                    <Text style={styles.descricao} numberOfLines={2}>
+                      {destaque.titulo}
+                    </Text>
+                    <View style={styles.selos}>
+                      <CriticidadeBadge criticidade={destaque.criticidade} />
+                      <StatusBadge status={destaque.status} />
+                    </View>
+                  </View>
+
+                  <Ionicons
+                    name="chevron-forward"
+                    size={18}
+                    color={colors.textMuted}
+                  />
+                </View>
+              </Pressable>
+            ) : null}
           </>
         )}
       </ScrollView>
@@ -168,124 +195,136 @@ export default function DashboardTela({ navigation, aoSair }) {
 const styles = StyleSheet.create({
   conteudo: {
     flexGrow: 1,
-    paddingHorizontal: 20,
-    paddingTop: 55,
-    paddingBottom: 28,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.lg,
   },
-
   cardPeriodo: {
-    height: 95,
-    backgroundColor: "#5D20F5",
-    borderRadius: 20,
-    paddingHorizontal: 16,
+    backgroundColor: colors.brandSoft,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.brandMuted,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-
-    elevation: 12,
-    shadowColor: "#000000",
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
   },
-
-  tituloPeriodo: {
-    color: "#FFFFFF",
-    fontSize: 19,
-    fontWeight: "bold",
-  },
-
-  textoPeriodo: {
-    color: "#FFFFFF",
-    fontSize: 12,
-    marginTop: 6,
-  },
-
   iconeClima: {
-    width: 53,
-    height: 53,
+    width: 40,
+    height: 40,
+    borderRadius: radius.sm,
+    backgroundColor: colors.surface,
     alignItems: "center",
     justifyContent: "center",
+    marginRight: 12,
   },
-
+  textoClima: {
+    flex: 1,
+  },
+  tituloPeriodo: {
+    ...typography.sectionTitle,
+    color: colors.text,
+  },
+  textoPeriodo: {
+    ...typography.meta,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
+  visaoGeral: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: 14,
+    marginTop: spacing.md,
+    ...shadow.card,
+  },
+  secaoTitulo: {
+    ...typography.sectionTitle,
+    color: colors.text,
+  },
   indicadores: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 18,
+    marginTop: 12,
   },
-
   cardIndicador: {
-    width: "30%",
-    height: 77,
-    borderRadius: 16,
+    flex: 1,
     alignItems: "center",
+    minHeight: 72,
     justifyContent: "center",
-    elevation: 5,
+    paddingVertical: spacing.sm,
   },
-
+  indicadorDivisor: {
+    borderRightWidth: 1,
+    borderRightColor: colors.border,
+  },
+  ponto: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginBottom: 6,
+  },
   quantidade: {
-    color: "#FFFFFF",
-    fontSize: 25,
-    fontWeight: "bold",
+    ...typography.kpi,
+    color: colors.text,
   },
-
   nomeIndicador: {
-    color: "#FFFFFF",
-    fontSize: 12,
+    ...typography.meta,
+    color: colors.textSecondary,
+    marginTop: 2,
   },
-
   monitoramento: {
-    height: 138,
-    backgroundColor: "#DADADA",
-    borderRadius: 20,
-    marginTop: 31,
-    padding: 13,
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    marginTop: spacing.md,
+    padding: 14,
+    ...shadow.card,
   },
-
   monitoramentoHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
   },
-
-  monitoramentoTitulo: {
-    color: "#111111",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-
   ia: {
-    color: "#16B957",
-    fontSize: 11,
-    fontWeight: "bold",
+    ...typography.meta,
+    color: colors.moderateText,
+    fontWeight: "600",
   },
-
   monitoramentoConteudo: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 13,
+    marginTop: 12,
   },
-
   imagem: {
-    width: 80,
-    height: 70,
-    borderRadius: 14,
+    width: 72,
+    height: 72,
+    borderRadius: radius.sm,
+    backgroundColor: colors.surfaceMuted,
   },
-
   informacoes: {
-    marginLeft: 16,
+    flex: 1,
+    marginLeft: 12,
+    marginRight: 8,
   },
-
   drone: {
-    fontSize: 13,
-    fontWeight: "bold",
+    ...typography.meta,
+    color: colors.textSecondary,
   },
-
   descricao: {
-    color: "#555555",
-    fontSize: 12,
-    marginTop: 6,
+    ...typography.cardTitle,
+    fontSize: 15,
+    color: colors.text,
+    marginTop: 4,
+  },
+  selos: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 6,
+    marginTop: 8,
+  },
+  pressionado: {
+    opacity: 0.86,
   },
 });

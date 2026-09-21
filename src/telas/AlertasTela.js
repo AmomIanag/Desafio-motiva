@@ -9,13 +9,12 @@ import {
 
 import ContainerTela from "../components/ContainerTela";
 import EstadoConteudo from "../components/EstadoConteudo";
+import FeedbackBanner from "../components/FeedbackBanner";
 import HeaderApp from "../components/HeaderApp";
+import OccurrenceCard from "../components/OccurrenceCard";
 import { useOcorrencias } from "../context/OcorrenciasContext";
-import {
-  CRITICIDADES,
-  STATUS_OCORRENCIA,
-  selecionarOcorrenciasPorFiltro,
-} from "../domain/ocorrenciaSelectors";
+import { selecionarOcorrenciasPorFiltro } from "../domain/ocorrenciaSelectors";
+import { colors, radius, spacing, typography } from "../theme";
 
 const FILTROS = ["Todos", "Crítico", "Atenção", "Resolvido"];
 
@@ -85,7 +84,7 @@ export default function AlertasTela({ navigation, route, aoSair }) {
 
   if (carregando) {
     return (
-      <ContainerTela>
+      <ContainerTela edges={["left", "right"]}>
         <HeaderApp titulo="Central de alertas" aoSair={aoSair} />
         <EstadoConteudo tipo="carregando" titulo="Carregando alertas" />
       </ContainerTela>
@@ -93,63 +92,28 @@ export default function AlertasTela({ navigation, route, aoSair }) {
   }
 
   function renderizarAlerta({ item: ocorrencia }) {
-    const resolvida = ocorrencia.status === "resolvida";
-    const criticidade = CRITICIDADES[ocorrencia.criticidade];
     const acao = obterAcao(ocorrencia, acoes);
     const processando = processandoId === ocorrencia.id;
     const algumaAcaoEmAndamento = Boolean(processandoId);
-    const cor = resolvida ? "#16A94F" : criticidade.cor;
 
     return (
-      <View style={[styles.card, { backgroundColor: cor }]}>
-        <View style={styles.cardTopo}>
-          <Text style={styles.tituloCard}>
-            KM {ocorrencia.km} - {ocorrencia.titulo}
-          </Text>
-
-          <View style={styles.selo}>
-            <Text style={styles.textoSelo}>
-              {resolvida ? "Resolvida" : criticidade.rotulo}
-            </Text>
-          </View>
-        </View>
-
-        <Text style={styles.descricao}>{ocorrencia.descricao}</Text>
-        <Text style={styles.status}>{STATUS_OCORRENCIA[ocorrencia.status]}</Text>
-
-        <View style={styles.areaAcoes}>
-          <Pressable
-            style={styles.linkDetalhe}
-            onPress={() =>
-              navigation.navigate("DetalheOcorrencia", {
-                ocorrenciaId: ocorrencia.id,
-              })
-            }
-          >
-            <Text style={styles.textoDetalhe}>Ver detalhes</Text>
-          </Pressable>
-
-          {acao ? (
-            <Pressable
-              style={[
-                styles.botaoAcao,
-                algumaAcaoEmAndamento && styles.botaoDesabilitado,
-              ]}
-              onPress={() => acao.executar(ocorrencia.id)}
-              disabled={algumaAcaoEmAndamento}
-            >
-              <Text style={styles.textoAcao}>
-                {processando ? "Salvando..." : acao.rotulo}
-              </Text>
-            </Pressable>
-          ) : null}
-        </View>
-      </View>
+      <OccurrenceCard
+        ocorrencia={ocorrencia}
+        mostrarDescricao
+        onPressDetalhe={() =>
+          navigation.navigate("DetalheOcorrencia", {
+            ocorrenciaId: ocorrencia.id,
+          })
+        }
+        acao={acao}
+        processando={processando}
+        acaoDesabilitada={algumaAcaoEmAndamento}
+      />
     );
   }
 
   return (
-    <ContainerTela>
+    <ContainerTela edges={["left", "right"]}>
       <HeaderApp titulo="Central de alertas" aoSair={aoSair} />
 
       <FlatList
@@ -174,15 +138,17 @@ export default function AlertasTela({ navigation, route, aoSair }) {
               />
             ) : null}
 
-            {feedback ? <Text style={styles.feedback}>{feedback}</Text> : null}
+            <FeedbackBanner mensagem={feedback} />
 
             <View style={styles.filtros}>
               {FILTROS.map((item) => (
                 <Pressable
                   key={item}
-                  style={[
+                  android_ripple={{ color: colors.brandMuted }}
+                  style={({ pressed }) => [
                     styles.botaoFiltro,
                     filtro === item && styles.filtroAtivo,
+                    pressed && styles.pressionado,
                   ]}
                   onPress={() => setFiltro(item)}
                 >
@@ -213,91 +179,44 @@ export default function AlertasTela({ navigation, route, aoSair }) {
 const styles = StyleSheet.create({
   lista: {
     flexGrow: 1,
-    paddingHorizontal: 16,
-    paddingBottom: 28,
+    paddingHorizontal: spacing.md,
+    paddingBottom: spacing.lg,
   },
   subtitulo: {
-    color: "#666666",
-    fontSize: 13,
-    fontWeight: "bold",
+    ...typography.meta,
+    color: colors.textSecondary,
     marginTop: 12,
-  },
-  feedback: {
-    color: "#087A36",
-    backgroundColor: "#E6F7ED",
-    borderRadius: 12,
-    padding: 10,
-    marginTop: 10,
-    fontSize: 12,
-    fontWeight: "bold",
-    textAlign: "center",
   },
   filtros: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 24,
-    marginBottom: 18,
+    flexWrap: "wrap",
+    gap: spacing.sm,
+    marginTop: spacing.md,
+    marginBottom: spacing.md,
   },
   botaoFiltro: {
-    minWidth: 70,
-    height: 29,
-    backgroundColor: "#DADADA",
-    borderRadius: 16,
+    minHeight: 36,
+    paddingHorizontal: 12,
+    backgroundColor: colors.surface,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: colors.border,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 8,
   },
-  filtroAtivo: { backgroundColor: "#5D20F5" },
-  textoFiltro: { color: "#777777", fontSize: 11, fontWeight: "bold" },
-  textoFiltroAtivo: { color: "#FFFFFF" },
-  card: {
-    minHeight: 150,
-    borderRadius: 20,
-    padding: 14,
-    marginBottom: 16,
-    elevation: 6,
+  filtroAtivo: {
+    backgroundColor: colors.brand,
+    borderColor: colors.brand,
   },
-  cardTopo: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
+  textoFiltro: {
+    ...typography.meta,
+    color: colors.textSecondary,
+    fontWeight: "600",
   },
-  tituloCard: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "bold",
-    flex: 1,
-    marginRight: 8,
+  textoFiltroAtivo: {
+    color: colors.textInverse,
   },
-  selo: {
-    backgroundColor: "rgba(255,255,255,0.22)",
-    borderRadius: 15,
-    paddingHorizontal: 11,
-    paddingVertical: 5,
+  pressionado: {
+    opacity: 0.84,
   },
-  textoSelo: { color: "#FFFFFF", fontSize: 11, fontWeight: "bold" },
-  descricao: {
-    color: "#FFFFFF",
-    fontSize: 13,
-    fontWeight: "bold",
-    marginTop: 9,
-    width: "85%",
-  },
-  status: { color: "#FFFFFF", fontSize: 11, marginTop: 7 },
-  areaAcoes: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 12,
-  },
-  linkDetalhe: { paddingVertical: 7, paddingRight: 10 },
-  textoDetalhe: { color: "#FFFFFF", fontSize: 12, fontWeight: "bold" },
-  botaoAcao: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 16,
-    paddingHorizontal: 15,
-    paddingVertical: 7,
-  },
-  botaoDesabilitado: { opacity: 0.65 },
-  textoAcao: { color: "#111111", fontSize: 12, fontWeight: "bold" },
 });

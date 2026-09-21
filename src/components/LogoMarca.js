@@ -1,30 +1,19 @@
 import React from "react";
-import {
-  View,
-  Image,
-  Text,
-  StyleSheet,
-} from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 
-export default function LogoMarca({
-  titulo = "motiva",
-  pequeno = false,
-}) {
+import { colors } from "../theme";
+
+export default function LogoMarca({ compacto = false }) {
   return (
     <View style={styles.container}>
       <Image
         source={require("../../assets/simbolo-motiva.png")}
-        style={styles.simbolo}
+        style={compacto ? styles.simboloCompacto : styles.simbolo}
         resizeMode="contain"
       />
 
-      <Text
-        style={[
-          styles.texto,
-          pequeno && styles.textoPequeno,
-        ]}
-      >
-        {titulo}
+      <Text style={compacto ? styles.textoCompacto : styles.texto}>
+        motiva
       </Text>
     </View>
   );
@@ -35,20 +24,24 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-
   simbolo: {
-    width: 40,
-    height: 35,
+    width: 32,
+    height: 28,
     marginRight: 6,
   },
-
-  texto: {
-    color: "#FFFFFF",
-    fontSize: 27,
-    fontWeight: "bold",
+  simboloCompacto: {
+    width: 26,
+    height: 22,
+    marginRight: 6,
   },
-
-  textoPequeno: {
-    fontSize: 23,
+  texto: {
+    color: colors.textInverse,
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  textoCompacto: {
+    color: colors.textInverse,
+    fontSize: 15,
+    fontWeight: "600",
   },
 });

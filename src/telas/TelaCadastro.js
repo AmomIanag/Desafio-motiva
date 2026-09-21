@@ -1,8 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  View,
   Text,
-  TextInput,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -10,9 +8,13 @@ import {
   Platform,
 } from "react-native";
 
+import CampoTexto from "../components/CampoTexto";
 import ContainerTela from "../components/ContainerTela";
-import LogoMarca from "../components/LogoMarca";
+import FeedbackBanner from "../components/FeedbackBanner";
+import HeaderApp from "../components/HeaderApp";
+import PrimaryButton from "../components/PrimaryButton";
 import { salvarUsuario } from "../storage/authStorage";
+import { colors, spacing, typography } from "../theme";
 
 export default function TelaCadastro({ navigation }) {
   const [nome, setNome] = useState("");
@@ -122,10 +124,8 @@ export default function TelaCadastro({ navigation }) {
   }
 
   return (
-    <ContainerTela>
-      <View style={styles.header}>
-        <LogoMarca />
-      </View>
+    <ContainerTela style={styles.fundoAuth}>
+      <HeaderApp />
 
       <KeyboardAvoidingView
         style={styles.area}
@@ -136,26 +136,24 @@ export default function TelaCadastro({ navigation }) {
           keyboardShouldPersistTaps="handled"
         >
           <Text style={styles.titulo}>Criar conta</Text>
+          <Text style={styles.subtitulo}>
+            Preencha os dados para acessar o monitoramento
+          </Text>
 
-          <TextInput
-            style={styles.input}
+          <CampoTexto
+            label="Nome"
             placeholder="Nome"
-            placeholderTextColor="#888888"
             value={nome}
             onChangeText={(texto) => {
               setNome(texto);
               setErros({ ...erros, nome: "" });
             }}
+            erro={erros.nome}
           />
 
-          {erros.nome ? (
-            <Text style={styles.erro}>{erros.nome}</Text>
-          ) : null}
-
-          <TextInput
-            style={styles.input}
+          <CampoTexto
+            label="E-mail"
             placeholder="E-mail"
-            placeholderTextColor="#888888"
             value={email}
             onChangeText={(texto) => {
               setEmail(texto);
@@ -163,79 +161,59 @@ export default function TelaCadastro({ navigation }) {
             }}
             keyboardType="email-address"
             autoCapitalize="none"
+            erro={erros.email}
           />
 
-          {erros.email ? (
-            <Text style={styles.erro}>{erros.email}</Text>
-          ) : null}
-
-          <TextInput
-            style={styles.input}
+          <CampoTexto
+            label="RM"
             placeholder="RM"
-            placeholderTextColor="#888888"
             value={rm}
             onChangeText={(texto) => {
               setRm(texto);
               setErros({ ...erros, rm: "" });
             }}
             keyboardType="numeric"
+            erro={erros.rm}
           />
 
-          {erros.rm ? (
-            <Text style={styles.erro}>{erros.rm}</Text>
-          ) : null}
-
-          <TextInput
-            style={styles.input}
+          <CampoTexto
+            label="Senha"
             placeholder="Senha"
-            placeholderTextColor="#888888"
             value={senha}
             onChangeText={(texto) => {
               setSenha(texto);
               setErros({ ...erros, senha: "" });
             }}
             secureTextEntry
+            erro={erros.senha}
           />
 
-          {erros.senha ? (
-            <Text style={styles.erro}>{erros.senha}</Text>
-          ) : null}
-
-          <TextInput
-            style={styles.input}
+          <CampoTexto
+            label="Confirmar senha"
             placeholder="Confirmar senha"
-            placeholderTextColor="#888888"
             value={confirmarSenha}
             onChangeText={(texto) => {
               setConfirmarSenha(texto);
               setErros({ ...erros, confirmarSenha: "" });
             }}
             secureTextEntry
+            erro={erros.confirmarSenha}
           />
 
-          {erros.confirmarSenha ? (
-            <Text style={styles.erro}>{erros.confirmarSenha}</Text>
-          ) : null}
+          <FeedbackBanner mensagem={mensagem} tipo={tipoMensagem} />
 
-          {mensagem ? (
-            <Text
-              style={tipoMensagem === "erro" ? styles.mensagemErro : styles.sucesso}
-            >
-              {mensagem}
-            </Text>
-          ) : null}
+          <PrimaryButton onPress={cadastrar} disabled={processando}>
+            {processando ? "Salvando..." : "Cadastrar"}
+          </PrimaryButton>
 
           <Pressable
-            style={[styles.botao, processando && styles.botaoDesabilitado]}
-            onPress={cadastrar}
+            onPress={voltarParaLogin}
             disabled={processando}
+            style={({ pressed }) => [
+              styles.linkArea,
+              pressed && styles.pressionado,
+            ]}
           >
-            <Text style={styles.textoBotao}>
-              {processando ? "Salvando..." : "Cadastrar"}
-            </Text>
-          </Pressable>
-
-          <Pressable onPress={voltarParaLogin} disabled={processando}>
             <Text style={styles.link}>Já tenho uma conta</Text>
           </Pressable>
         </ScrollView>
@@ -245,92 +223,41 @@ export default function TelaCadastro({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  header: {
-    height: 90,
-    backgroundColor: "#5D20F5",
-    justifyContent: "center",
-    paddingHorizontal: 18,
+  fundoAuth: {
+    backgroundColor: colors.surface,
   },
-
   area: {
     flex: 1,
   },
-
   conteudo: {
-    alignItems: "center",
-    paddingHorizontal: 35,
-    paddingTop: 28,
-    paddingBottom: 35,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.xl,
   },
-
   titulo: {
-    color: "#5D20F5",
-    fontSize: 25,
-    fontWeight: "bold",
-    marginBottom: 24,
+    ...typography.title,
+    fontSize: 22,
+    color: colors.text,
+    marginBottom: spacing.xs,
   },
-
-  input: {
-    width: "100%",
-    height: 48,
-    backgroundColor: "#EDEDED",
-    borderRadius: 15,
-    paddingHorizontal: 20,
-    fontSize: 16,
-    color: "#333333",
-    elevation: 3,
-    marginBottom: 16,
-  },
-
-  erro: {
-    width: "100%",
-    color: "#D71920",
-    fontSize: 12,
-    marginTop: 5,
-    marginBottom: 10,
-    marginLeft: 7,
-  },
-
-  sucesso: {
-    color: "#16A94F",
+  subtitulo: {
+    ...typography.body,
     fontSize: 13,
-    fontWeight: "bold",
-    marginTop: 12,
+    color: colors.textSecondary,
+    marginBottom: spacing.lg,
   },
-
-  mensagemErro: {
-    color: "#D71920",
-    fontSize: 13,
-    fontWeight: "bold",
-    marginTop: 12,
-    textAlign: "center",
-  },
-
-  botao: {
-    minWidth: 140,
-    height: 44,
-    backgroundColor: "#5D20F5",
-    borderRadius: 14,
+  linkArea: {
+    minHeight: 44,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 22,
-    paddingHorizontal: 24,
+    marginTop: spacing.sm,
   },
-
-  botaoDesabilitado: {
-    opacity: 0.65,
-  },
-
-  textoBotao: {
-    color: "#FFFFFF",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-
   link: {
-    color: "#5D20F5",
-    fontSize: 14,
-    fontWeight: "bold",
-    marginTop: 18,
+    ...typography.body,
+    color: colors.brand,
+    fontWeight: "600",
+  },
+  pressionado: {
+    opacity: 0.8,
   },
 });

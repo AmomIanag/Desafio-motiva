@@ -7,6 +7,8 @@ import {
   View,
 } from "react-native";
 
+import { colors, radius, spacing, typography } from "../theme";
+
 export default function EstadoConteudo({
   tipo = "vazio",
   titulo,
@@ -21,7 +23,10 @@ export default function EstadoConteudo({
   return (
     <View style={[styles.container, compacto && styles.containerCompacto]}>
       {carregando ? (
-        <ActivityIndicator size={compacto ? "small" : "large"} color="#5D20F5" />
+        <ActivityIndicator
+          size={compacto ? "small" : "large"}
+          color={colors.brand}
+        />
       ) : null}
 
       {titulo ? (
@@ -31,7 +36,11 @@ export default function EstadoConteudo({
       {mensagem ? <Text style={styles.mensagem}>{mensagem}</Text> : null}
 
       {textoAcao && aoPressionar ? (
-        <Pressable style={styles.botao} onPress={aoPressionar}>
+        <Pressable
+          onPress={aoPressionar}
+          android_ripple={{ color: "rgba(255,255,255,0.18)" }}
+          style={({ pressed }) => [styles.botao, pressed && styles.pressionado]}
+        >
           <Text style={styles.textoBotao}>{textoAcao}</Text>
         </Pressable>
       ) : null}
@@ -41,45 +50,50 @@ export default function EstadoConteudo({
 
 const styles = StyleSheet.create({
   container: {
-    minHeight: 180,
+    minHeight: 140,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 25,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
   },
   containerCompacto: {
     minHeight: 0,
-    backgroundColor: "#FFF4F4",
-    borderRadius: 12,
+    backgroundColor: colors.criticalSoft,
+    borderRadius: radius.sm,
     paddingHorizontal: 12,
     paddingVertical: 10,
-    marginVertical: 10,
+    marginVertical: spacing.sm,
   },
   titulo: {
-    color: "#333333",
-    fontSize: 17,
-    fontWeight: "bold",
+    ...typography.sectionTitle,
+    color: colors.text,
     textAlign: "center",
-    marginTop: 10,
+    marginTop: spacing.sm,
   },
   tituloErro: {
-    color: "#B42318",
+    color: colors.danger,
   },
   mensagem: {
-    color: "#666666",
+    ...typography.body,
     fontSize: 13,
+    color: colors.textSecondary,
     textAlign: "center",
-    marginTop: 6,
+    marginTop: spacing.xs,
   },
   botao: {
-    backgroundColor: "#5D20F5",
-    borderRadius: 14,
+    backgroundColor: colors.brand,
+    borderRadius: radius.sm,
+    minHeight: 40,
     paddingHorizontal: 18,
-    paddingVertical: 9,
+    justifyContent: "center",
     marginTop: 12,
   },
+  pressionado: {
+    opacity: 0.88,
+  },
   textoBotao: {
-    color: "#FFFFFF",
-    fontSize: 13,
-    fontWeight: "bold",
+    ...typography.meta,
+    color: colors.textInverse,
+    fontWeight: "600",
   },
 });

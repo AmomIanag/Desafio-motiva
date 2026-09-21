@@ -4,7 +4,6 @@ import {
   View,
   Text,
   Image,
-  Pressable,
   ScrollView,
   StyleSheet,
 } from "react-native";
@@ -13,12 +12,10 @@ import * as Location from "expo-location";
 import ContainerTela from "../components/ContainerTela";
 import EstadoConteudo from "../components/EstadoConteudo";
 import HeaderApp from "../components/HeaderApp";
+import OccurrenceCard from "../components/OccurrenceCard";
 import { useOcorrencias } from "../context/OcorrenciasContext";
-import {
-  CRITICIDADES,
-  STATUS_OCORRENCIA,
-  selecionarOcorrenciasDoMapa,
-} from "../domain/ocorrenciaSelectors";
+import { selecionarOcorrenciasDoMapa } from "../domain/ocorrenciaSelectors";
+import { colors, radius, spacing, typography } from "../theme";
 
 export default function TelaMapa({ navigation, aoSair }) {
   const { ocorrencias, carregando, erro, recarregar } = useOcorrencias();
@@ -51,7 +48,7 @@ export default function TelaMapa({ navigation, aoSair }) {
 
   if (carregando) {
     return (
-      <ContainerTela>
+      <ContainerTela edges={["left", "right"]}>
         <HeaderApp titulo="Mapa" aoSair={aoSair} />
         <EstadoConteudo tipo="carregando" titulo="Carregando mapa" />
       </ContainerTela>
@@ -59,7 +56,7 @@ export default function TelaMapa({ navigation, aoSair }) {
   }
 
   return (
-    <ContainerTela>
+    <ContainerTela edges={["left", "right"]}>
       <HeaderApp titulo="Mapa" aoSair={aoSair} />
 
       <ScrollView contentContainerStyle={styles.conteudo}>
@@ -76,7 +73,7 @@ export default function TelaMapa({ navigation, aoSair }) {
 
         <View style={styles.avisoLocalizacao}>
           {estadoLocalizacao === "carregando" ? (
-            <ActivityIndicator size="small" color="#5D20F5" />
+            <ActivityIndicator size="small" color={colors.brand} />
           ) : (
             <Text style={styles.textoLocalizacao}>
               {estadoLocalizacao === "permitida"
@@ -88,38 +85,23 @@ export default function TelaMapa({ navigation, aoSair }) {
           )}
         </View>
 
-      <Image
-        source={require("../../assets/mapa.png")}
-        style={styles.mapa}
-        resizeMode="cover"
-      />
+        <View style={styles.mapaMoldura}>
+          <Image
+            source={require("../../assets/mapa.png")}
+            style={styles.mapa}
+            resizeMode="cover"
+          />
+        </View>
 
-      <View style={styles.areaCards}>
+        <Text style={styles.secaoTitulo}>Ocorrências em destaque</Text>
+
         {pontosMapa.map((item) => (
-          <Pressable
+          <OccurrenceCard
             key={item.id}
-            style={styles.card}
+            ocorrencia={item}
             onPress={() => abrirDetalhe(item)}
-          >
-            <Text style={styles.km}>KM {item.km}</Text>
-
-            <Text style={styles.descricao}>
-              {item.titulo}
-            </Text>
-
-            <Text
-              style={[
-                styles.status,
-                { color: CRITICIDADES[item.criticidade].cor },
-              ]}
-            >
-              {STATUS_OCORRENCIA[item.status]}
-            </Text>
-
-            <Text style={styles.link}>Ver detalhes</Text>
-          </Pressable>
+          />
         ))}
-      </View>
 
         {pontosMapa.length === 0 ? (
           <EstadoConteudo
@@ -135,68 +117,40 @@ export default function TelaMapa({ navigation, aoSair }) {
 const styles = StyleSheet.create({
   conteudo: {
     flexGrow: 1,
-    paddingTop: 24,
-    paddingBottom: 28,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.lg,
   },
-
   avisoLocalizacao: {
-    minHeight: 34,
+    minHeight: 40,
     justifyContent: "center",
-    paddingHorizontal: 14,
-    marginHorizontal: 10,
-    marginBottom: 16,
-    backgroundColor: "#F2EDFF",
-    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: spacing.sm,
+    marginBottom: spacing.md,
+    backgroundColor: colors.brandSoft,
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    borderColor: colors.brandMuted,
   },
-
   textoLocalizacao: {
-    color: "#5D20F5",
-    fontSize: 11,
+    ...typography.meta,
+    color: colors.brand,
     textAlign: "center",
   },
-
+  mapaMoldura: {
+    height: 240,
+    borderRadius: radius.md,
+    overflow: "hidden",
+    backgroundColor: colors.surfaceMuted,
+    marginBottom: spacing.lg,
+  },
   mapa: {
     width: "100%",
-    height: 194,
+    height: "100%",
   },
-
-  areaCards: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 10,
-    marginTop: 36,
-  },
-
-  card: {
-    width: "31%",
-    minHeight: 112,
-    backgroundColor: "#DEDEDE",
-    borderRadius: 15,
-    paddingHorizontal: 7,
-    paddingVertical: 13,
-    elevation: 7,
-  },
-
-  km: {
-    color: "#858585",
-    fontSize: 12,
-  },
-
-  descricao: {
-    color: "#858585",
-    fontSize: 11,
-    marginTop: 4,
-  },
-
-  status: {
-    fontSize: 10,
-    fontWeight: "bold",
-    marginTop: 5,
-  },
-
-  link: {
-    color: "#858585",
-    fontSize: 10,
-    marginTop: 5,
+  secaoTitulo: {
+    ...typography.sectionTitle,
+    color: colors.text,
+    marginBottom: 12,
   },
 });

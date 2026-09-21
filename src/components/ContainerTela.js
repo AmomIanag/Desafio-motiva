@@ -2,10 +2,16 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function ContainerTela({ children, style }) {
+import { colors } from "../theme";
+
+export default function ContainerTela({
+  children,
+  style,
+  edges = ["left", "right", "bottom"],
+}) {
   return (
     <SafeAreaView
-      edges={["left", "right", "bottom"]}
+      edges={edges}
       style={[styles.container, style]}
     >
       {children}
@@ -16,6 +22,6 @@ export default function ContainerTela({ children, style }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.background,
   },
 });
