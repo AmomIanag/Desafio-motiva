@@ -21,12 +21,17 @@ export default function TelaLogin({ navigation }) {
   const [senha, setSenha] = useState("");
 
   const [erros, setErros] = useState({});
+  const [processando, setProcessando] = useState(false);
 
   function emailValido(valor) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor);
   }
 
   async function entrar() {
+    if (processando) {
+      return;
+    }
+
     const novosErros = {};
 
     if (!email.trim()) {
@@ -45,6 +50,8 @@ export default function TelaLogin({ navigation }) {
       return;
     }
 
+    setProcessando(true);
+
     try {
       const usuario = await buscarUsuario();
 
@@ -52,6 +59,7 @@ export default function TelaLogin({ navigation }) {
         setErros({
           geral: "Nenhum usuário cadastrado. Crie uma conta primeiro.",
         });
+        setProcessando(false);
         return;
       }
 
@@ -64,6 +72,7 @@ export default function TelaLogin({ navigation }) {
         setErros({
           geral: "E-mail ou senha inválidos",
         });
+        setProcessando(false);
         return;
       }
 
@@ -77,6 +86,7 @@ export default function TelaLogin({ navigation }) {
       setErros({
         geral: "Não foi possível acessar os dados salvos.",
       });
+      setProcessando(false);
     }
   }
 
@@ -128,8 +138,14 @@ export default function TelaLogin({ navigation }) {
             <Text style={styles.erroGeral}>{erros.geral}</Text>
           ) : null}
 
-          <Pressable style={styles.botao} onPress={entrar}>
-            <Text style={styles.textoBotao}>Entrar</Text>
+          <Pressable
+            style={[styles.botao, processando && styles.botaoDesabilitado]}
+            onPress={entrar}
+            disabled={processando}
+          >
+            <Text style={styles.textoBotao}>
+              {processando ? "Entrando..." : "Entrar"}
+            </Text>
           </Pressable>
 
           <Pressable onPress={() => navigation.navigate("Cadastro")}>
@@ -198,6 +214,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 30,
     marginTop: 20,
+  },
+
+  botaoDesabilitado: {
+    opacity: 0.65,
   },
 
   textoBotao: {

@@ -5,7 +5,7 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 
-export default function TabBar({ state, navigation }) {
+export default function TabBar({ state, descriptors, navigation, insets }) {
   function mostrarIcone(nomeRota, selecionada) {
     const cor = "#FFFFFF";
     const tamanho = selecionada ? 25 : 23;
@@ -50,21 +50,43 @@ export default function TabBar({ state, navigation }) {
   }
 
   return (
-    <View style={styles.barra}>
+    <View
+      style={[
+        styles.barra,
+        {
+          height: 74 + (insets?.bottom ?? 0),
+          paddingBottom: insets?.bottom ?? 0,
+        },
+      ]}
+    >
       {state.routes.map((rota, indice) => {
         const selecionada = state.index === indice;
 
         function abrirTela() {
-          if (!selecionada) {
+          const evento = navigation.emit({
+            type: "tabPress",
+            target: rota.key,
+            canPreventDefault: true,
+          });
+
+          if (!selecionada && !evento.defaultPrevented) {
             navigation.navigate(rota.name);
           }
         }
+
+        const opcoes = descriptors[rota.key]?.options ?? {};
 
         return (
           <Pressable
             key={rota.key}
             style={styles.botao}
             onPress={abrirTela}
+            onLongPress={() =>
+              navigation.emit({ type: "tabLongPress", target: rota.key })
+            }
+            accessibilityRole="button"
+            accessibilityState={selecionada ? { selected: true } : {}}
+            accessibilityLabel={opcoes.tabBarAccessibilityLabel ?? rota.name}
           >
             <View
               style={[

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -23,12 +23,28 @@ export default function TelaCadastro({ navigation }) {
 
   const [erros, setErros] = useState({});
   const [mensagem, setMensagem] = useState("");
+  const [tipoMensagem, setTipoMensagem] = useState("sucesso");
+  const [processando, setProcessando] = useState(false);
+  const timerNavegacao = useRef(null);
+
+  useEffect(
+    () => () => {
+      if (timerNavegacao.current) {
+        clearTimeout(timerNavegacao.current);
+      }
+    },
+    [],
+  );
 
   function emailValido(valor) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor);
   }
 
   async function cadastrar() {
+    if (processando) {
+      return;
+    }
+
     const novosErros = {};
 
     if (!nome.trim()) {
@@ -64,6 +80,8 @@ export default function TelaCadastro({ navigation }) {
       return;
     }
 
+    setProcessando(true);
+
     const usuario = {
       nome: nome.trim(),
       email: email.trim().toLowerCase(),
@@ -74,13 +92,32 @@ export default function TelaCadastro({ navigation }) {
     try {
       await salvarUsuario(usuario);
 
+      setTipoMensagem("sucesso");
       setMensagem("Cadastro realizado com sucesso!");
 
-      setTimeout(() => {
-        navigation.replace("Login");
-      }, 1000);
+      timerNavegacao.current = setTimeout(() => {
+        if (navigation.canGoBack()) {
+          navigation.goBack();
+        } else {
+          navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+        }
+      }, 700);
     } catch {
+      setTipoMensagem("erro");
       setMensagem("Não foi possível salvar o cadastro.");
+      setProcessando(false);
+    }
+  }
+
+  function voltarParaLogin() {
+    if (timerNavegacao.current) {
+      clearTimeout(timerNavegacao.current);
+    }
+
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.reset({ index: 0, routes: [{ name: "Login" }] });
     }
   }
 
@@ -181,14 +218,24 @@ export default function TelaCadastro({ navigation }) {
           ) : null}
 
           {mensagem ? (
-            <Text style={styles.sucesso}>{mensagem}</Text>
+            <Text
+              style={tipoMensagem === "erro" ? styles.mensagemErro : styles.sucesso}
+            >
+              {mensagem}
+            </Text>
           ) : null}
 
-          <Pressable style={styles.botao} onPress={cadastrar}>
-            <Text style={styles.textoBotao}>Cadastrar</Text>
+          <Pressable
+            style={[styles.botao, processando && styles.botaoDesabilitado]}
+            onPress={cadastrar}
+            disabled={processando}
+          >
+            <Text style={styles.textoBotao}>
+              {processando ? "Salvando..." : "Cadastrar"}
+            </Text>
           </Pressable>
 
-          <Pressable onPress={() => navigation.replace("Login")}>
+          <Pressable onPress={voltarParaLogin} disabled={processando}>
             <Text style={styles.link}>Já tenho uma conta</Text>
           </Pressable>
         </ScrollView>
@@ -251,6 +298,14 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
 
+  mensagemErro: {
+    color: "#D71920",
+    fontSize: 13,
+    fontWeight: "bold",
+    marginTop: 12,
+    textAlign: "center",
+  },
+
   botao: {
     minWidth: 140,
     height: 44,
@@ -260,6 +315,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 22,
     paddingHorizontal: 24,
+  },
+
+  botaoDesabilitado: {
+    opacity: 0.65,
   },
 
   textoBotao: {

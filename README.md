@@ -135,6 +135,7 @@ O protótipo funcional possui as seguintes funcionalidades:
 * persistência da sessão;
 * logout;
 * dashboard com indicadores operacionais;
+* domínio único de ocorrências compartilhado entre Dashboard, Mapa, Alertas e Relatórios;
 * identificação do período climático;
 * apresentação de trechos críticos, em atenção e moderados;
 * navegação por abas inferiores;
@@ -144,13 +145,14 @@ O protótipo funcional possui as seguintes funcionalidades:
 * visualização das imagens capturadas pelos drones;
 * central de alertas;
 * filtros de alertas;
-* acionamento simulado de equipe;
-* alteração do alerta para o estado resolvido;
+* fluxo operacional coerente de agendar, enviar, iniciar atendimento e resolver;
+* sincronização imediata das ações entre todas as telas;
+* persistência versionada somente das alterações operacionais;
 * acompanhamento de equipe ativa;
-* indicadores de redução de custos;
-* indicadores de eficiência operacional;
-* gráfico de desempenho;
-* exportação simulada de relatório de conformidade.
+* métricas e gráfico derivados das ocorrências, com indicadores estratégicos identificados como simulados;
+* prévia funcional de relatório de conformidade;
+* estados de carregamento, vazio, erro, retry e parâmetros inválidos;
+* restauração controlada dos dados de demonstração.
 
 ---
 
@@ -187,7 +189,7 @@ O protótipo funcional possui as seguintes funcionalidades:
 | **RF-011** | O usuário deve conseguir acionar ou agendar uma equipe por meio de um alerta.                        |
 | **RF-012** | O aplicativo deve alterar o estado do alerta após o acionamento da equipe.                           |
 | **RF-013** | O aplicativo deve apresentar indicadores de custos e eficiência operacional.                         |
-| **RF-014** | O aplicativo deve simular a exportação de um relatório de conformidade.                              |
+| **RF-014** | O aplicativo deve preparar uma prévia de relatório de conformidade com os dados atuais.              |
 | **RF-015** | O aplicativo deve solicitar permissão para acessar a localização do dispositivo.                     |
 
 ---
@@ -290,10 +292,16 @@ motiva-prototipo/
 │
 ├── src/
 │   ├── components/
+│   ├── context/
 │   ├── data/
+│   ├── domain/
 │   ├── navegacao/
 │   ├── storage/
 │   └── telas/
+│
+├── docs/
+│   ├── TESTES_MANUAIS.md
+│   └── PENDENCIAS_SPRINT_4.md
 │
 ├── App.js
 ├── app.json
@@ -428,7 +436,35 @@ O aplicativo utiliza dados mockados para representar:
 * indicadores de custos;
 * eficiência operacional.
 
-Não existe dependência de APIs externas para o funcionamento do protótipo.
+Não existe dependência de APIs externas para o funcionamento do protótipo. A coleção em `src/data/mockData.js` é o baseline único. Criticidade (`critico`, `atencao`, `moderado`) e status operacional (`nova`, `agendada`, `equipe_enviada`, `em_atendimento`, `resolvida`) são conceitos separados.
+
+O cenário padrão possui 9 ocorrências coerentes para demonstração. Entre as abertas, o baseline apresenta 3 críticas, 2 em atenção e 3 moderadas; há ainda uma ocorrência crítica já resolvida.
+
+### Arquitetura de estado
+
+- `OcorrenciasContext` centraliza hidratação, reducer, transições, loading e feedback.
+- `ocorrenciaSelectors.js` concentra os cálculos derivados usados pelas telas.
+- Dashboard, Mapa, Alertas, Detalhe, Drone e Relatórios consultam a mesma coleção.
+- As ações válidas seguem a sequência operacional e não permitem reutilizar uma ação incompatível em ocorrências resolvidas.
+
+### Persistência operacional
+
+O AsyncStorage salva um documento versionado com apenas os patches de status, datas e equipe. Imagens e o baseline não são serializados. Na inicialização, o aplicativo combina o mock-base com os patches válidos; JSON/versão inválidos possuem fallback seguro.
+
+Logout remove a sessão, mas não apaga as operações. Em Relatórios existe uma ação secundária, com confirmação, para restaurar o baseline da demonstração.
+
+### Fluxos principais
+
+- Cadastro → Login → Dashboard;
+- Mapa → Detalhe da ocorrência → Imagem do drone;
+- Alertas → ação operacional → atualização de Dashboard, Mapa e Relatórios;
+- Relatórios → indicadores derivados → prévia de conformidade.
+
+### Estados alternativos
+
+O componente `EstadoConteudo` apresenta carregamento, vazio, erro e retry. Localização negada mantém o mapa simulado disponível, e IDs ausentes ou inválidos exibem fallback sem causar crash.
+
+Para QA manual, `CENARIO_MOCK_ATIVO` em `src/context/OcorrenciasContext.js` pode ser alterado temporariamente de `padrao` para `vazio` ou `erro`. A constante `SIMULAR_FALHA_PERSISTENCIA` em `src/storage/ocorrenciasStorage.js` permite validar erro de escrita sem falso sucesso. Os valores entregues são `padrao` e `false`.
 
 ---
 
@@ -438,7 +474,9 @@ Este projeto possui finalidade acadêmica e utiliza dados simulados.
 
 O AsyncStorage é utilizado para demonstrar a persistência local de cadastro e sessão. Em uma aplicação real, dados sensíveis, como senhas, não devem ser armazenados dessa forma sem criptografia e mecanismos adequados de segurança.
 
-A exportação do relatório em PDF é simulada visualmente e não gera um documento real.
+A tela de Relatórios prepara uma prévia real com as métricas atuais, mas não gera um arquivo PDF. O PDF permaneceu opcional para evitar adicionar dependências nativas ao fim de uma Sprint focada em estabilidade.
+
+Os resultados detalhados estão em [docs/TESTES_MANUAIS.md](./docs/TESTES_MANUAIS.md). As evoluções propostas, incluindo PDF real e testes automatizados, estão em [docs/PENDENCIAS_SPRINT_4.md](./docs/PENDENCIAS_SPRINT_4.md).
 
 ---
 

@@ -1,30 +1,86 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import {
   View,
   Text,
   Image,
+  Pressable,
+  ScrollView,
   StyleSheet,
 } from "react-native";
 
 import ContainerTela from "../components/ContainerTela";
+import EstadoConteudo from "../components/EstadoConteudo";
 import HeaderApp from "../components/HeaderApp";
-import { indicadores } from "../data/mockData";
+import { periodoClimatico } from "../data/mockData";
+import { useOcorrencias } from "../context/OcorrenciasContext";
+import {
+  CRITICIDADES,
+  selecionarContagemPorCriticidade,
+  selecionarDestaqueMonitoramento,
+} from "../domain/ocorrenciaSelectors";
 
-export default function DashboardTela({ aoSair }) {
+export default function DashboardTela({ navigation, aoSair }) {
+  const { ocorrencias, carregando, erro, recarregar } = useOcorrencias();
+
+  const contagem = useMemo(
+    () => selecionarContagemPorCriticidade(ocorrencias),
+    [ocorrencias],
+  );
+  const destaque = useMemo(
+    () => selecionarDestaqueMonitoramento(ocorrencias),
+    [ocorrencias],
+  );
+  const indicadores = [
+    { id: "critico", quantidade: contagem.critico, ...CRITICIDADES.critico },
+    { id: "atencao", quantidade: contagem.atencao, ...CRITICIDADES.atencao },
+    { id: "moderado", quantidade: contagem.moderado, ...CRITICIDADES.moderado },
+  ];
+
+  if (carregando) {
+    return (
+      <ContainerTela>
+        <HeaderApp titulo="Dashboard" aoSair={aoSair} />
+        <EstadoConteudo
+          tipo="carregando"
+          titulo="Carregando monitoramento"
+          mensagem="Recuperando as informações operacionais."
+        />
+      </ContainerTela>
+    );
+  }
+
   return (
     <ContainerTela>
       <HeaderApp titulo="Dashboard" aoSair={aoSair} />
 
-      <View style={styles.conteudo}>
+      <ScrollView contentContainerStyle={styles.conteudo}>
+        {erro ? (
+          <EstadoConteudo
+            tipo="erro"
+            titulo="Atenção"
+            mensagem={erro}
+            textoAcao="Tentar novamente"
+            aoPressionar={recarregar}
+            compacto
+          />
+        ) : null}
+
+        {ocorrencias.length === 0 ? (
+          <EstadoConteudo
+            titulo="Nenhuma ocorrência"
+            mensagem="Não há trechos monitorados neste cenário."
+          />
+        ) : (
+          <>
         <View style={styles.cardPeriodo}>
           <View>
             <Text style={styles.tituloPeriodo}>
-              Período: Verão/Chuva
+              Período: {periodoClimatico.nome}
             </Text>
 
             <Text style={styles.textoPeriodo}>
-              Ritmo de crescimento vegetal acelerado (3x)
+              {periodoClimatico.descricao}
             </Text>
           </View>
 
@@ -39,25 +95,43 @@ export default function DashboardTela({ aoSair }) {
 
         <View style={styles.indicadores}>
           {indicadores.map((item) => (
-            <View
+            <Pressable
               key={item.id}
               style={[
                 styles.cardIndicador,
                 { backgroundColor: item.cor },
               ]}
+              onPress={() =>
+                navigation.navigate("Alertas", {
+                  filtroInicial:
+                    item.id === "critico"
+                      ? "Crítico"
+                      : item.id === "atencao"
+                        ? "Atenção"
+                        : "Todos",
+                })
+              }
             >
               <Text style={styles.quantidade}>
                 {item.quantidade}
               </Text>
 
               <Text style={styles.nomeIndicador}>
-                {item.nome}
+                {item.rotulo}
               </Text>
-            </View>
+            </Pressable>
           ))}
         </View>
 
-        <View style={styles.monitoramento}>
+        {destaque ? (
+          <Pressable
+            style={styles.monitoramento}
+            onPress={() =>
+              navigation.navigate("DetalheOcorrencia", {
+                ocorrenciaId: destaque.id,
+              })
+            }
+          >
           <View style={styles.monitoramentoHeader}>
             <Text style={styles.monitoramentoTitulo}>
               Monitoramento Inteligente
@@ -68,31 +142,35 @@ export default function DashboardTela({ aoSair }) {
 
           <View style={styles.monitoramentoConteudo}>
             <Image
-              source={require("../../assets/monitoramento.png")}
+              source={destaque.imagem}
               style={styles.imagem}
             />
 
             <View style={styles.informacoes}>
               <Text style={styles.drone}>
-                🔴 Drone KM84
+                {destaque.origem} · KM {destaque.km}
               </Text>
 
               <Text style={styles.descricao}>
-                Vegetação crítica detectada
+                {destaque.titulo}
               </Text>
             </View>
           </View>
-        </View>
-      </View>
+          </Pressable>
+        ) : null}
+          </>
+        )}
+      </ScrollView>
     </ContainerTela>
   );
 }
 
 const styles = StyleSheet.create({
   conteudo: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: 20,
     paddingTop: 55,
+    paddingBottom: 28,
   },
 
   cardPeriodo: {

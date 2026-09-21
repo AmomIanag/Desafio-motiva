@@ -6,14 +6,42 @@ import {
   Pressable,
   StyleSheet,
 } from "react-native";
+import ContainerTela from "../components/ContainerTela";
+import EstadoConteudo from "../components/EstadoConteudo";
+import { useOcorrencias } from "../context/OcorrenciasContext";
+import { selecionarOcorrenciaPorId } from "../domain/ocorrenciaSelectors";
 
 export default function DroneImagemTela({ route, navigation }) {
-  const { imagem } = route.params;
+  const { ocorrencias, carregando } = useOcorrencias();
+  const ocorrenciaId = route?.params?.ocorrenciaId;
+  const ocorrencia = selecionarOcorrenciaPorId(ocorrencias, ocorrenciaId);
+
+  if (carregando) {
+    return (
+      <ContainerTela style={styles.fallback}>
+        <EstadoConteudo tipo="carregando" titulo="Carregando imagem" />
+      </ContainerTela>
+    );
+  }
+
+  if (!ocorrencia?.imagem) {
+    return (
+      <ContainerTela style={styles.fallback}>
+        <EstadoConteudo
+          tipo="erro"
+          titulo="Imagem indisponível"
+          mensagem="A ocorrência informada não possui uma imagem válida."
+          textoAcao="Voltar"
+          aoPressionar={() => navigation.goBack()}
+        />
+      </ContainerTela>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <Image
-        source={imagem}
+        source={ocorrencia.imagem}
         style={styles.imagem}
         resizeMode="cover"
       />
@@ -29,6 +57,9 @@ export default function DroneImagemTela({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
+  fallback: {
+    justifyContent: "center",
+  },
   container: {
     flex: 1,
     backgroundColor: "#1F1F1F",

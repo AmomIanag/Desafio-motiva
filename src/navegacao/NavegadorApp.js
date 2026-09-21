@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   ActivityIndicator,
+  Alert,
   StyleSheet,
 } from "react-native";
 
@@ -16,6 +17,7 @@ import TelaMapa from "../telas/TelaMapa";
 import AlertasTela from "../telas/AlertasTela";
 import ReportsTela from "../telas/ReportsTela";
 import DroneImagemTela from "../telas/DroneImagemTela";
+import DetalheOcorrenciaTela from "../telas/DetalheOcorrenciaTela";
 
 import TabBar from "../components/TabBar";
 import {
@@ -28,12 +30,19 @@ const Tab = createBottomTabNavigator();
 
 function TelasPrincipais({ navigation }) {
   async function sair() {
-    await removerSessao();
+    try {
+      await removerSessao();
 
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Login" }],
-    });
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      });
+    } catch {
+      Alert.alert(
+        "Não foi possível sair",
+        "A sessão não pôde ser removida. Tente novamente.",
+      );
+    }
   }
 
   return (
@@ -79,6 +88,8 @@ export default function NavegadorApp() {
       try {
         const sessao = await buscarSessao();
         setTemSessao(Boolean(sessao));
+      } catch {
+        setTemSessao(false);
       } finally {
         setCarregando(false);
       }
@@ -119,6 +130,11 @@ export default function NavegadorApp() {
         <Stack.Screen
           name="Principal"
           component={TelasPrincipais}
+        />
+
+        <Stack.Screen
+          name="DetalheOcorrencia"
+          component={DetalheOcorrenciaTela}
         />
 
         <Stack.Screen
