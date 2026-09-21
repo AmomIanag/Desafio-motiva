@@ -2,39 +2,39 @@
 
 Aplicativo mobile para monitoramento inteligente de vegetação e apoio à conservação de rodovias da concessionária Motiva.
 
-O projeto foi desenvolvido como uma solução acadêmica para simular a identificação de trechos com crescimento excessivo de vegetação, obstrução de placas e outros riscos relacionados à conservação rodoviária.
+O projeto foi desenvolvido como uma solução acadêmica para simular a identificação e o acompanhamento de trechos com crescimento excessivo de vegetação, obstrução de placas, canaletas comprometidas e outros riscos relacionados à conservação rodoviária.
 
 ---
 
 ## 👥 Integrantes do Grupo
 
-| Integrante                   |     RM |
-| ---------------------------- | -----: |
-| Amom Ianaguivara Brito       | 565718 |
-| Victor Chen                  | 565363 |
+| Integrante | RM |
+| --- | ---: |
+| Amom Ianaguivara Brito | 565718 |
+| Victor Chen | 565363 |
 | Fernando Antônio de Oliveira | 562549 |
-| Vinícius Mello Siqueira      | 565257 |
-| Gabriel Ramos                | 564074 |
+| Vinícius Mello Siqueira | 565257 |
+| Gabriel Ramos | 564074 |
 
 ---
 
 ## 📌 Problema escolhido
 
-O projeto busca resolver a **ineficiência e a escala limitada das inspeções visuais manuais** utilizadas na conservação das áreas verdes presentes ao longo das rodovias.
+O projeto busca reduzir a **ineficiência e a escala limitada das inspeções visuais manuais** utilizadas na conservação das áreas verdes presentes ao longo das rodovias.
 
-Atualmente, a identificação de problemas como mato alto, crescimento acelerado da vegetação e obstrução de placas depende do deslocamento frequente de equipes humanas pelas vias.
+Atualmente, a identificação de problemas como mato alto, crescimento acelerado da vegetação, placas encobertas e canaletas obstruídas depende do deslocamento frequente de equipes humanas pelas vias.
 
 Esse modelo apresenta diferentes dificuldades:
 
-* altos custos com combustível, veículos e equipes de inspeção;
-* dificuldade para monitorar grandes extensões de rodovia;
-* identificação tardia de ocorrências;
-* manutenção predominantemente reativa;
-* risco de vegetação encobrir placas e comprometer a visibilidade;
-* possibilidade de penalidades aplicadas por órgãos reguladores, como ARTESP e ANTT;
-* dificuldade para priorizar corretamente as equipes de poda e conservação.
+- altos custos com combustível, veículos e equipes de inspeção;
+- dificuldade para monitorar grandes extensões de rodovia;
+- identificação tardia de ocorrências;
+- manutenção predominantemente reativa;
+- risco de vegetação encobrir placas e comprometer a visibilidade;
+- possibilidade de penalidades aplicadas por órgãos reguladores, como ARTESP e ANTT;
+- dificuldade para priorizar corretamente as equipes de poda e conservação.
 
-O objetivo do projeto é automatizar parte desse processo, permitindo que os problemas sejam identificados e classificados antes que se tornem riscos graves para a segurança viária.
+O objetivo da solução é centralizar e organizar as ocorrências operacionais, permitindo identificar criticidade, acompanhar o atendimento e priorizar os pontos que exigem intervenção.
 
 ---
 
@@ -42,20 +42,20 @@ O objetivo do projeto é automatizar parte desse processo, permitindo que os pro
 
 ### Roberto Silva
 
-**Idade:** 42 anos
+**Idade:** 42 anos  
 **Profissão:** Supervisor de Conservação Rodoviária
 
-Roberto é responsável por coordenar as equipes de poda, roçagem, drenagem e manutenção de ativos distribuídos por aproximadamente 400 quilômetros de rodovia.
+Roberto é responsável por coordenar equipes de poda, roçagem, drenagem e manutenção de ativos distribuídos por aproximadamente 400 quilômetros de rodovia.
 
 ### Responsabilidades
 
-* acompanhar as condições dos trechos sob concessão;
-* coordenar equipes de conservação;
-* definir prioridades de atendimento;
-* acompanhar ocorrências críticas;
-* evitar atrasos e penalidades regulatórias;
-* produzir indicadores operacionais;
-* comprovar a execução das atividades de manutenção.
+- acompanhar as condições dos trechos sob concessão;
+- coordenar equipes de conservação;
+- definir prioridades de atendimento;
+- acompanhar ocorrências críticas;
+- evitar atrasos e penalidades regulatórias;
+- produzir indicadores operacionais;
+- comprovar a execução das atividades de manutenção.
 
 ### Dificuldades
 
@@ -69,166 +69,241 @@ Além disso, as informações podem estar espalhadas em diferentes relatórios, 
 
 Roberto precisa de uma ferramenta centralizada que informe:
 
-* onde existe uma ocorrência;
-* qual é o nível de criticidade;
-* quais trechos precisam de atendimento imediato;
-* onde a vegetação está crescendo rapidamente;
-* quais equipes foram acionadas;
-* quais ocorrências já foram resolvidas;
-* quais resultados operacionais foram obtidos.
+- onde existe uma ocorrência;
+- qual é o nível de criticidade;
+- quais trechos precisam de atendimento imediato;
+- onde a vegetação está crescendo rapidamente;
+- quais equipes foram acionadas;
+- quais ocorrências já foram resolvidas;
+- quais resultados operacionais foram obtidos.
 
 ---
 
 ## 💡 Proposta de solução
 
-A solução proposta é um aplicativo mobile chamado **Motiva Green Vision**, conectado conceitualmente a um ecossistema de monitoramento por satélite, drones e inteligência artificial.
+A solução é um aplicativo mobile de monitoramento e apoio à decisão para conservação rodoviária, conectado **conceitualmente** a um ecossistema de satélites, drones e análise inteligente de dados.
 
-O sistema utiliza um funil tecnológico dividido em três etapas.
+O fluxo conceitual da solução é dividido em três etapas.
 
 ### 1. Vigilância macro por satélite
 
-Satélites realizam o monitoramento periódico da vegetação ao longo das rodovias por meio de indicadores como o NDVI, utilizado para analisar a presença e a intensidade da cobertura vegetal.
+Satélites podem realizar o monitoramento periódico da vegetação ao longo das rodovias por meio de indicadores como NDVI, auxiliando na identificação de regiões com crescimento acelerado ou comportamento fora do padrão.
 
-O satélite não calcula diretamente a altura da vegetação. Ele funciona como um primeiro filtro, identificando áreas com crescimento acelerado ou comportamento fora do padrão.
+Nesta Sprint, essa etapa é representada por dados simulados.
 
 ### 2. Inspeção localizada por drones
 
-Depois que uma região é identificada como suspeita, um drone é direcionado até a coordenada do trecho.
+Depois que uma região é identificada como suspeita, drones podem realizar inspeções visuais mais detalhadas para verificar situações como:
 
-O drone realiza uma inspeção visual mais detalhada, permitindo verificar situações como:
+- vegetação elevada;
+- placas de trânsito encobertas;
+- canaletas de drenagem obstruídas;
+- redução da visibilidade;
+- riscos em curvas e acostamentos.
 
-* vegetação elevada;
-* placas de trânsito encobertas;
-* canaletas de drenagem obstruídas;
-* redução da visibilidade;
-* riscos em curvas e acostamentos.
+No aplicativo, as imagens de inspeção são representadas por assets locais associados às ocorrências mockadas.
 
-As imagens capturadas são disponibilizadas para o gestor dentro do aplicativo.
+### 3. Classificação operacional e aplicativo mobile
 
-### 3. Inteligência sazonal e aplicativo mobile
+As ocorrências são classificadas por criticidade:
 
-Os dados coletados são classificados de acordo com a criticidade da ocorrência.
+- **Crítico:** necessita de intervenção imediata;
+- **Atenção:** precisa ser programado para atendimento;
+- **Moderado:** permanece em monitoramento.
 
-A solução considera fatores como período de chuva, crescimento sazonal da vegetação e nível de risco operacional.
+Além da criticidade, cada ocorrência possui um **status operacional independente**, como:
 
-O aplicativo apresenta os dados em três níveis principais:
+- nova;
+- agendada;
+- equipe enviada;
+- em atendimento;
+- resolvida.
 
-* **Crítico:** necessita de intervenção imediata;
-* **Atenção:** precisa ser programado para atendimento;
-* **Moderado:** permanece em monitoramento.
-
-Por meio do aplicativo, o supervisor pode consultar o mapa, visualizar imagens dos drones, acompanhar alertas, acionar equipes e analisar indicadores estratégicos.
-
----
-
-## 📱 Funcionalidades implementadas
-
-O protótipo funcional possui as seguintes funcionalidades:
-
-* cadastro de usuário;
-* validação dos campos do formulário;
-* validação do formato de e-mail;
-* validação de senha e confirmação de senha;
-* login permitido somente para usuários cadastrados;
-* mensagens de erro exibidas abaixo dos campos;
-* armazenamento local dos dados do usuário;
-* persistência da sessão;
-* logout;
-* dashboard com indicadores operacionais;
-* domínio único de ocorrências compartilhado entre Dashboard, Mapa, Alertas e Relatórios;
-* identificação do período climático;
-* apresentação de trechos críticos, em atenção e moderados;
-* navegação por abas inferiores;
-* mapa simulado de monitoramento;
-* solicitação de permissão de localização;
-* cards com trechos monitorados;
-* visualização das imagens capturadas pelos drones;
-* central de alertas;
-* filtros de alertas;
-* fluxo operacional coerente de agendar, enviar, iniciar atendimento e resolver;
-* sincronização imediata das ações entre todas as telas;
-* persistência versionada somente das alterações operacionais;
-* acompanhamento de equipe ativa;
-* métricas e gráfico derivados das ocorrências, com indicadores estratégicos identificados como simulados;
-* prévia funcional de relatório de conformidade;
-* estados de carregamento, vazio, erro, retry e parâmetros inválidos;
-* restauração controlada dos dados de demonstração.
+Por meio do aplicativo, o supervisor pode consultar o Dashboard, acompanhar o mapa simulado, abrir detalhes de ocorrências, visualizar imagens de drones, acionar equipes e acompanhar métricas operacionais.
 
 ---
 
-## 🛠️ Stack tecnológica e justificativa
+## ✅ Status da Sprint 3
 
-| Tecnologia            | Função no projeto                      | Justificativa                                                                                                      |
-| --------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| **JavaScript**        | Linguagem utilizada no desenvolvimento | Permite desenvolver a lógica do aplicativo de forma direta e possui integração completa com React Native e Expo.   |
-| **React Native**      | Framework principal                    | Permite desenvolver aplicações para Android e iOS utilizando uma única base de código.                             |
-| **Expo**              | Ambiente de desenvolvimento            | Simplifica a criação, execução e teste do aplicativo em dispositivos físicos e emuladores.                         |
-| **React Navigation**  | Navegação entre telas                  | Permite criar a navegação em pilha e o menu inferior utilizado entre Dashboard, Mapa, Alertas e Relatórios.        |
-| **Expo Location**     | Serviço de localização                 | Permite solicitar a localização do dispositivo e simular o uso de coordenadas geográficas nos trechos monitorados. |
-| **AsyncStorage**      | Armazenamento local                    | Mantém os dados do usuário e da sessão salvos no dispositivo, mesmo após o aplicativo ser fechado.                 |
-| **Expo Vector Icons** | Ícones da interface                    | Disponibiliza ícones compatíveis com o Expo para as abas, alertas, mapa e elementos visuais da aplicação.          |
-| **Android Studio**    | Emulador Android                       | Utilizado para executar e validar o aplicativo em um dispositivo virtual Pixel 5.                                  |
-| **Figma**             | Prototipação                           | Utilizado para criar o protótipo navegável de alta fidelidade e definir a identidade visual do aplicativo.         |
+A Sprint 3 consolida o protótipo anterior em uma aplicação funcional completa, com fluxos integrados e dados mockados compartilhados entre as telas.
+
+### Funcionalidades implementadas
+
+- cadastro de usuário;
+- validação de campos;
+- validação de formato de e-mail;
+- validação de senha e confirmação de senha;
+- login permitido apenas para usuário cadastrado;
+- mensagens de erro inline;
+- persistência local do usuário e da sessão;
+- logout;
+- proteção contra envios duplicados em autenticação;
+- Dashboard com indicadores derivados do domínio de ocorrências;
+- banner sazonal;
+- domínio único de ocorrências;
+- separação entre criticidade e status operacional;
+- sincronização entre Dashboard, Mapa, Alertas e Relatórios;
+- navegação por abas inferiores;
+- mapa simulado de monitoramento;
+- solicitação e tratamento da permissão de localização;
+- lista de ocorrências em destaque;
+- tela de detalhe da ocorrência;
+- visualização de imagens de drone contextualizadas;
+- central de alertas;
+- filtros por situação;
+- fluxo operacional de agendar, enviar equipe, iniciar atendimento e resolver;
+- persistência versionada das alterações operacionais;
+- métricas e gráfico derivados das ocorrências;
+- indicadores estratégicos explicitamente identificados como simulados;
+- prévia funcional de relatório de conformidade;
+- estados de loading, vazio, erro, retry e ocorrência inválida;
+- restauração controlada do cenário de demonstração;
+- interface refinada com componentes visuais reutilizáveis e identidade Motiva preservada.
 
 ---
 
-## 📋 Requisitos funcionais
+## 🧱 Arquitetura da aplicação
 
-| Código     | Requisito                                                                                            |
-| ---------- | ---------------------------------------------------------------------------------------------------- |
-| **RF-001** | O aplicativo deve permitir o cadastro do usuário com nome, e-mail, RM, senha e confirmação de senha. |
-| **RF-002** | O aplicativo deve validar o preenchimento dos campos obrigatórios.                                   |
-| **RF-003** | O aplicativo deve permitir o login somente de usuários previamente cadastrados.                      |
-| **RF-004** | O aplicativo deve manter os dados do usuário armazenados localmente.                                 |
-| **RF-005** | O aplicativo deve permitir que o usuário encerre sua sessão por meio do botão de logout.             |
-| **RF-006** | O aplicativo deve exibir um dashboard com indicadores de trechos críticos, em atenção e moderados.   |
-| **RF-007** | O aplicativo deve apresentar um mapa contendo os pontos monitorados.                                 |
-| **RF-008** | O usuário deve poder visualizar imagens associadas às inspeções dos drones.                          |
-| **RF-009** | O aplicativo deve apresentar uma central de alertas operacionais.                                    |
-| **RF-010** | O usuário deve conseguir filtrar os alertas por situação.                                            |
-| **RF-011** | O usuário deve conseguir acionar ou agendar uma equipe por meio de um alerta.                        |
-| **RF-012** | O aplicativo deve alterar o estado do alerta após o acionamento da equipe.                           |
-| **RF-013** | O aplicativo deve apresentar indicadores de custos e eficiência operacional.                         |
-| **RF-014** | O aplicativo deve preparar uma prévia de relatório de conformidade com os dados atuais.              |
-| **RF-015** | O aplicativo deve solicitar permissão para acessar a localização do dispositivo.                     |
+A Sprint 3 substituiu conjuntos independentes de mocks por uma única coleção-base de ocorrências.
+
+```text
+mockData.js
+   │
+   ▼
+OcorrenciasContext + useReducer
+   │
+   ├── persistência por patches
+   ├── estados de loading/erro/feedback
+   └── ações operacionais
+   │
+   ▼
+ocorrenciaSelectors.js
+   │
+   ├── Dashboard
+   ├── Mapa
+   ├── Alertas
+   ├── Detalhe
+   └── Relatórios
+```
+
+### Estado compartilhado
+
+O `OcorrenciasContext` centraliza:
+
+- ocorrências;
+- status das equipes;
+- hidratação;
+- feedback de ações;
+- transições de status;
+- persistência das alterações.
+
+### Seletores
+
+`src/domain/ocorrenciaSelectors.js` concentra cálculos derivados, evitando duplicação de regras entre telas.
+
+### Persistência operacional
+
+O aplicativo não serializa a coleção completa nem imagens locais. O `AsyncStorage` armazena somente **patches versionados** das mudanças operacionais.
+
+Na inicialização:
+
+```text
+mock-base + patches persistidos = estado atual
+```
+
+Em caso de JSON inválido, versão incompatível ou falha de leitura, o aplicativo utiliza um fallback seguro.
+
+---
+
+## 🛠️ Stack tecnológica
+
+### Aplicação
+
+| Tecnologia | Função |
+| --- | --- |
+| **JavaScript** | Linguagem principal do projeto |
+| **React Native** | Framework mobile |
+| **Expo SDK 56** | Ambiente de desenvolvimento e execução |
+| **React Navigation** | Stack e Bottom Tabs |
+| **AsyncStorage** | Sessão, cadastro e persistência operacional |
+| **Expo Location** | Permissão/localização do dispositivo |
+| **Expo Vector Icons** | Ícones da interface |
+| **Context API + useReducer** | Estado compartilhado das ocorrências |
+
+### Ferramentas
+
+| Ferramenta | Uso |
+| --- | --- |
+| **Android Studio** | Emulador Android Pixel 5 |
+| **Figma** | Protótipo visual original |
+| **Git / GitHub** | Versionamento e entrega |
+
+---
+
+## 📋 Requisitos funcionais atendidos
+
+| Código | Requisito |
+| --- | --- |
+| **RF-001** | Permitir cadastro com nome, e-mail, RM, senha e confirmação de senha. |
+| **RF-002** | Validar campos obrigatórios e credenciais. |
+| **RF-003** | Permitir login somente para usuário previamente cadastrado. |
+| **RF-004** | Persistir os dados locais e a sessão. |
+| **RF-005** | Permitir logout. |
+| **RF-006** | Exibir Dashboard com indicadores derivados das ocorrências. |
+| **RF-007** | Exibir mapa simulado com pontos/ocorrências monitoradas. |
+| **RF-008** | Exibir detalhes e imagens associadas às inspeções de drone. |
+| **RF-009** | Exibir uma central de alertas operacionais. |
+| **RF-010** | Permitir filtrar alertas. |
+| **RF-011** | Permitir agendar ou acionar equipe. |
+| **RF-012** | Permitir evolução coerente do status operacional. |
+| **RF-013** | Refletir alterações de uma ocorrência nas demais telas. |
+| **RF-014** | Exibir métricas operacionais e indicadores simulados. |
+| **RF-015** | Preparar uma prévia de relatório de conformidade. |
+| **RF-016** | Solicitar e tratar permissão de localização. |
+| **RF-017** | Persistir alterações operacionais após reinício do aplicativo. |
+| **RF-018** | Exibir estados de loading, vazio, erro, retry e item inexistente. |
 
 ---
 
 ## ⚙️ Requisitos não funcionais
 
-| Código      | Requisito                                                                                       |
-| ----------- | ----------------------------------------------------------------------------------------------- |
-| **RNF-001** | O aplicativo deve possuir interface responsiva e adaptável a diferentes tamanhos de tela.       |
-| **RNF-002** | O aplicativo deve seguir a identidade visual institucional baseada nas cores roxa e branca.     |
-| **RNF-003** | As telas devem possuir navegação simples e intuitiva.                                           |
-| **RNF-004** | Os dados utilizados na demonstração devem ser mockados, sem dependência de APIs externas.       |
-| **RNF-005** | O aplicativo deve funcionar em um emulador Android Pixel 5.                                     |
-| **RNF-006** | O projeto deve utilizar JavaScript, sem TypeScript.                                             |
-| **RNF-007** | Os dados locais devem permanecer disponíveis após o aplicativo ser fechado.                     |
-| **RNF-008** | O carregamento das informações simuladas deve ocorrer em até três segundos.                     |
-| **RNF-009** | Os erros dos formulários devem ser exibidos de maneira clara, sem depender de caixas de alerta. |
+| Código | Requisito |
+| --- | --- |
+| **RNF-001** | Interface responsiva e adaptável a diferentes tamanhos de tela. |
+| **RNF-002** | Preservar identidade visual institucional baseada em roxo, branco e cores semânticas. |
+| **RNF-003** | Navegação simples e intuitiva. |
+| **RNF-004** | Utilizar dados mockados sem dependência de APIs externas. |
+| **RNF-005** | Funcionar no emulador Android Pixel 5. |
+| **RNF-006** | Utilizar JavaScript, sem TypeScript. |
+| **RNF-007** | Persistir os dados locais relevantes após fechamento do aplicativo. |
+| **RNF-008** | Manter carregamentos simulados curtos e previsíveis para demonstração. |
+| **RNF-009** | Exibir erros de formulário de forma clara e inline. |
+| **RNF-010** | Não causar crash em parâmetros inválidos, localização negada ou falha de hidratação. |
 
 ---
 
 ## 🎨 Identidade visual
 
-A interface foi desenvolvida com base no protótipo de alta fidelidade criado no Figma.
+A interface teve origem no protótipo de alta fidelidade criado no Figma e foi refinada na Sprint 3.
 
-A identidade visual utiliza principalmente:
+A identidade atual utiliza:
 
-* roxo institucional;
-* fundo branco;
-* cards arredondados;
-* sombras suaves;
-* indicadores por cores;
-* vermelho para ocorrências críticas;
-* amarelo para ocorrências de atenção;
-* verde para ocorrências resolvidas;
-* navegação inferior por ícones.
+- roxo institucional como cor principal de marca e ação;
+- fundo claro;
+- cards brancos com bordas sutis;
+- sombras leves;
+- badges e acentos semânticos;
+- vermelho para criticidade crítica;
+- amarelo/âmbar para atenção;
+- verde para moderado e estados resolvidos, com tratamentos visuais distintos;
+- status operacional visualmente separado da criticidade;
+- navegação inferior com ícones e labels;
+- tipografia e espaçamentos mais consistentes.
 
 ---
 
 ## 🖼️ Capturas de tela
+
 
 ### Login
 
@@ -246,6 +321,10 @@ A identidade visual utiliza principalmente:
 
 ![Mapa](./assets/prints/mapa.png)
 
+### Detalhe da ocorrência
+
+![Detalhe da ocorrência](./assets/prints/detalhe-ocorrencia.png)
+
 ### Imagem capturada pelo drone
 
 ![Imagem do drone](./assets/prints/drone.png)
@@ -258,13 +337,9 @@ A identidade visual utiliza principalmente:
 
 ![Alerta resolvido](./assets/prints/alerta-resolvido.png)
 
-### Relatórios e ROI
+### Relatórios
 
 ![Relatórios](./assets/prints/relatorios.png)
-
-### Relatório exportado
-
-![Relatório exportado](./assets/prints/relatorio-exportado.png)
 
 ---
 
@@ -274,21 +349,16 @@ A identidade visual utiliza principalmente:
 motiva-prototipo/
 ├── assets/
 │   ├── prints/
-│   │   ├── login.png
-│   │   ├── cadastro.png
-│   │   ├── dashboard.png
-│   │   ├── mapa.png
-│   │   ├── drone.png
-│   │   ├── alertas.png
-│   │   ├── alerta-resolvido.png
-│   │   ├── relatorios.png
-│   │   └── relatorio-exportado.png
 │   ├── simbolo-motiva.png
 │   ├── monitoramento.png
 │   ├── mapa.png
 │   ├── drone1.png
 │   ├── drone2.png
 │   └── drone3.png
+│
+├── docs/
+│   ├── TESTES_MANUAIS.md
+│   └── PENDENCIAS_SPRINT_4.md
 │
 ├── src/
 │   ├── components/
@@ -297,16 +367,16 @@ motiva-prototipo/
 │   ├── domain/
 │   ├── navegacao/
 │   ├── storage/
-│   └── telas/
-│
-├── docs/
-│   ├── TESTES_MANUAIS.md
-│   └── PENDENCIAS_SPRINT_4.md
+│   ├── telas/
+│   └── theme.js
 │
 ├── App.js
 ├── app.json
+├── index.js
 ├── package.json
-└── README.md
+├── package-lock.json
+├── README.md
+└── REQUISITOS.md
 ```
 
 ---
@@ -315,53 +385,37 @@ motiva-prototipo/
 
 ### Pré-requisitos
 
-Antes de executar o projeto, é necessário possuir:
-
-* Node.js;
-* npm;
-* Expo;
-* Android Studio;
-* emulador Android configurado.
+- Node.js;
+- npm;
+- Android Studio, caso seja utilizado emulador Android.
 
 ### Instalação
 
-Clone o repositório:
-
 ```bash
 git clone URL_DO_REPOSITORIO
-```
-
-Entre na pasta:
-
-```bash
 cd motiva-prototipo
-```
-
-Instale as dependências:
-
-```bash
 npm install
 ```
 
-Inicie o projeto:
+Inicie o Expo:
 
 ```bash
 npx expo start
 ```
 
-Com o emulador Pixel 5 aberto, pressione:
+Com o emulador Android aberto, pressione:
 
 ```text
 a
 ```
 
-Também é possível executar diretamente no Android:
+Também é possível iniciar diretamente:
 
 ```bash
 npx expo start --android
 ```
 
-Caso seja necessário limpar o cache:
+Para limpar o cache:
 
 ```bash
 npx expo start --clear
@@ -369,53 +423,33 @@ npx expo start --clear
 
 ---
 
-## 📦 Dependências utilizadas
+## 📦 Dependências principais
 
-Caso seja necessário instalar manualmente as dependências, utilize:
+As dependências oficiais estão declaradas em `package.json`.
 
-```bash
-npm install @react-navigation/native
-```
+Entre as principais:
 
-```bash
-npx expo install react-native-screens react-native-safe-area-context
-```
+- `expo`;
+- `react`;
+- `react-native`;
+- `@react-navigation/native`;
+- `@react-navigation/native-stack`;
+- `@react-navigation/bottom-tabs`;
+- `@react-native-async-storage/async-storage`;
+- `expo-location`;
+- `@expo/vector-icons`;
+- `react-native-safe-area-context`;
+- `react-native-screens`.
 
-```bash
-npm install @react-navigation/native-stack
-```
-
-```bash
-npm install @react-navigation/bottom-tabs
-```
-
-```bash
-npx expo install expo-location
-```
-
-```bash
-npx expo install @react-native-async-storage/async-storage
-```
-
-```bash
-npx expo install @expo/vector-icons
-```
+Não é necessário instalar cada dependência manualmente após executar `npm install`.
 
 ---
 
-## 🎨 Protótipo navegável
+## 🎨 Protótipo no Figma
 
-O protótipo de alta fidelidade apresenta a jornada do usuário, incluindo:
+O protótipo original apresenta a jornada inicial do aplicativo e serviu como base para a implementação React Native.
 
-* login;
-* dashboard;
-* mapa;
-* inspeções por drone;
-* central de alertas;
-* acionamento de equipe;
-* alertas resolvidos;
-* relatórios;
-* exportação simulada.
+A Sprint 3 evoluiu alguns fluxos e estados além do protótipo original, por isso o código atual representa a fonte de verdade da aplicação.
 
 🔗 [Acessar o protótipo no Figma](https://www.figma.com/design/Y3wKlkhxwHISzipeRF67d3/Prot%C3%B3tipo-app---challenge-motiva?node-id=0-1&t=trR4pVo4QEATt4zK-1)
 
@@ -423,48 +457,102 @@ O protótipo de alta fidelidade apresenta a jornada do usuário, incluindo:
 
 ## 🧪 Dados simulados
 
-O aplicativo utiliza dados mockados para representar:
+O projeto utiliza dados mockados para representar:
 
-* quantidade de trechos críticos;
-* ocorrências em atenção;
-* áreas moderadas;
-* informações sazonais;
-* coordenadas e trechos rodoviários;
-* imagens de inspeção;
-* alertas operacionais;
-* estados das equipes;
-* indicadores de custos;
-* eficiência operacional.
+- ocorrências críticas, em atenção e moderadas;
+- período climático;
+- coordenadas e trechos rodoviários;
+- imagens de inspeção;
+- alertas;
+- equipes;
+- estados operacionais;
+- métricas;
+- indicadores estratégicos e previsão simulada.
 
-Não existe dependência de APIs externas para o funcionamento do protótipo. A coleção em `src/data/mockData.js` é o baseline único. Criticidade (`critico`, `atencao`, `moderado`) e status operacional (`nova`, `agendada`, `equipe_enviada`, `em_atendimento`, `resolvida`) são conceitos separados.
+Não existe dependência de APIs externas para o funcionamento da Sprint 3.
 
-O cenário padrão possui 9 ocorrências coerentes para demonstração. Entre as abertas, o baseline apresenta 3 críticas, 2 em atenção e 3 moderadas; há ainda uma ocorrência crítica já resolvida.
+O baseline contém **9 ocorrências**, sendo:
 
-### Arquitetura de estado
+- 3 críticas abertas;
+- 2 em atenção abertas;
+- 3 moderadas abertas;
+- 1 ocorrência crítica resolvida.
 
-- `OcorrenciasContext` centraliza hidratação, reducer, transições, loading e feedback.
-- `ocorrenciaSelectors.js` concentra os cálculos derivados usados pelas telas.
-- Dashboard, Mapa, Alertas, Detalhe, Drone e Relatórios consultam a mesma coleção.
-- As ações válidas seguem a sequência operacional e não permitem reutilizar uma ação incompatível em ocorrências resolvidas.
+Criticidade e status operacional são conceitos independentes.
 
-### Persistência operacional
+---
 
-O AsyncStorage salva um documento versionado com apenas os patches de status, datas e equipe. Imagens e o baseline não são serializados. Na inicialização, o aplicativo combina o mock-base com os patches válidos; JSON/versão inválidos possuem fallback seguro.
+## 🔄 Fluxos principais
 
-Logout remove a sessão, mas não apaga as operações. Em Relatórios existe uma ação secundária, com confirmação, para restaurar o baseline da demonstração.
+### Autenticação
 
-### Fluxos principais
+```text
+Cadastro → Login → Dashboard
+```
 
-- Cadastro → Login → Dashboard;
-- Mapa → Detalhe da ocorrência → Imagem do drone;
-- Alertas → ação operacional → atualização de Dashboard, Mapa e Relatórios;
-- Relatórios → indicadores derivados → prévia de conformidade.
+### Monitoramento
 
-### Estados alternativos
+```text
+Mapa → Detalhe da ocorrência → Imagem do drone
+```
 
-O componente `EstadoConteudo` apresenta carregamento, vazio, erro e retry. Localização negada mantém o mapa simulado disponível, e IDs ausentes ou inválidos exibem fallback sem causar crash.
+### Atendimento
 
-Para QA manual, `CENARIO_MOCK_ATIVO` em `src/context/OcorrenciasContext.js` pode ser alterado temporariamente de `padrao` para `vazio` ou `erro`. A constante `SIMULAR_FALHA_PERSISTENCIA` em `src/storage/ocorrenciasStorage.js` permite validar erro de escrita sem falso sucesso. Os valores entregues são `padrao` e `false`.
+```text
+Alerta
+→ Agendar/Enviar equipe
+→ Iniciar atendimento
+→ Resolver
+```
+
+As mudanças são compartilhadas entre as telas.
+
+### Relatórios
+
+```text
+Ocorrências
+→ Métricas derivadas
+→ Prévia de conformidade
+```
+
+---
+
+## 🧪 Testes manuais
+
+Os testes da Sprint 3 estão documentados em:
+
+[`docs/TESTES_MANUAIS.md`](./docs/TESTES_MANUAIS.md)
+
+Entre os cenários cobertos:
+
+- cadastro e login;
+- restauração de sessão;
+- Mapa → Detalhe → Drone;
+- ações em Alertas;
+- sincronização com Dashboard e Relatórios;
+- filtros;
+- persistência;
+- localização negada;
+- estados vazio e erro;
+- restauração do baseline.
+
+---
+
+## 🚧 Pendências para Sprint 4
+
+As pendências estão documentadas em:
+
+[`docs/PENDENCIAS_SPRINT_4.md`](./docs/PENDENCIAS_SPRINT_4.md)
+
+Entre as possíveis evoluções:
+
+- geração real de PDF;
+- integração com APIs/backend;
+- autenticação apropriada para produção;
+- testes automatizados;
+- dados reais de satélite/drone;
+- mapa real;
+- evolução da camada de análise inteligente.
 
 ---
 
@@ -472,11 +560,11 @@ Para QA manual, `CENARIO_MOCK_ATIVO` em `src/context/OcorrenciasContext.js` pode
 
 Este projeto possui finalidade acadêmica e utiliza dados simulados.
 
-O AsyncStorage é utilizado para demonstrar a persistência local de cadastro e sessão. Em uma aplicação real, dados sensíveis, como senhas, não devem ser armazenados dessa forma sem criptografia e mecanismos adequados de segurança.
+O `AsyncStorage` é utilizado para demonstrar persistência local de cadastro, sessão e operações. Em um produto real, senhas não devem ser armazenadas dessa forma sem criptografia e mecanismos adequados de autenticação.
 
-A tela de Relatórios prepara uma prévia real com as métricas atuais, mas não gera um arquivo PDF. O PDF permaneceu opcional para evitar adicionar dependências nativas ao fim de uma Sprint focada em estabilidade.
+A tela de Relatórios prepara uma prévia de conformidade baseada nos dados atuais, mas **não gera um arquivo PDF** nesta Sprint.
 
-Os resultados detalhados estão em [docs/TESTES_MANUAIS.md](./docs/TESTES_MANUAIS.md). As evoluções propostas, incluindo PDF real e testes automatizados, estão em [docs/PENDENCIAS_SPRINT_4.md](./docs/PENDENCIAS_SPRINT_4.md).
+Satélite, drones, previsão inteligente e demais fontes externas são representados conceitualmente por mocks. O aplicativo não depende desses serviços para executar a demonstração.
 
 ---
 
