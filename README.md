@@ -8,11 +8,11 @@ O projeto foi desenvolvido como uma solução acadêmica para simular a identifi
 
 ## 🎬 Entrega final — Sprint 4
 
-**Vídeo demonstrativo (pitch de até 5 minutos):** [▶ Assistir ao vídeo demonstrativo](urlvideo).  
+**Vídeo demonstrativo (pitch de até 5 minutos):** [▶ Assistir ao vídeo demonstrativo](https://youtu.be/pyFmKxmVMvU).  
 
 **APK Android — Motiva Challenge v1.0.0:** Gerado por Expo EAS Build e instalado no emulador Android Pixel 5. **Link de download no GitHub Releases:** [Baixar APK v1.0.0](https://github.com/AmomIanag/Desafio-motiva/releases/tag/v1.0.0) 
 
-**Plano de negócio:** [Consultar documento completo](./docs/PLANO_DE_NEGOCIO.md).  
+**Plano de negócio:** [Consultar documento completo](./docs/PLANO_DE_NEGOCIO_MOTIVA_CHALLENGE.md).  
 **Repositório do projeto:** [GitHub — Desafio-motiva](https://github.com/AmomIanag/Desafio-motiva).
 
 > **Nota:** o APK é independente do Expo Go. O monitoramento de satélites/drones, ocorrências e projeções utiliza dados simulados neste protótipo acadêmico.
