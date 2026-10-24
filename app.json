@@ -35,6 +35,12 @@
         }
       ],
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "32acc14f-8cb4-44b1-9ebc-976d03eee1cf"
+      }
+    },
+    "owner": "amomianag"
   }
 }

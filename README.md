@@ -162,6 +162,35 @@ A Sprint 3 consolida o protótipo anterior em uma aplicação funcional completa
 
 ---
 
+## Status da Sprint 4 — Versão Final e APK
+
+### Implementações realizadas
+- ✅ Correção dos filtros.
+- ✅ Geração de relatórios em PDF.
+- ✅ 18 testes automatizados aprovados.
+- ✅ Identidade visual Android.
+- ✅ Configuração para geração do APK.
+- ✅ Elaboração do plano de negócio.
+
+### Validação e entrega
+- ⏳ Publicação do APK no GitHub Releases.
+- ⏳ Testes do APK instalado.
+- ⏳ Publicação do vídeo demonstrativo.
+
+---
+
+## Plano de Negócio
+
+O Motiva Challenge propõe uma solução de monitoramento
+inteligente da vegetação, com foco em segurança viária,
+eficiência operacional e manutenção preventiva.
+
+O modelo de negócio contempla licenciamento B2B,
+implantação e serviços de monitoramento para
+concessionárias de infraestrutura.
+
+📄 [Consultar o Plano de Negócio completo](docs/PLANO_DE_NEGOCIO.md)
+
 ## 🧱 Arquitetura da aplicação
 
 A Sprint 3 substituiu conjuntos independentes de mocks por uma única coleção-base de ocorrências.
