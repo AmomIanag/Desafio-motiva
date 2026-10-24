@@ -200,9 +200,8 @@ A Sprint 3 consolida o protótipo anterior em uma aplicação funcional completa
 ### Validação e entrega
 
 - ✅ Abertura e verificação funcional inicial do APK no emulador Android.
-- ⏳ Publicação do arquivo `.apk` como anexo no **GitHub Releases**.
-- ⏳ Publicação do **vídeo demonstrativo** no YouTube, em modo não listado.
-- ⏳ Inclusão dos links finais neste README e no arquivo `.txt` exigido na entrega.
+- ✅ Publicação do arquivo `.apk` como anexo no **GitHub Releases**.
+- ✅ Publicação do **vídeo demonstrativo** no YouTube, em modo não listado.
 
 > O código e os testes automatizados foram verificados; a validação de PDF/compartilhamento no Android deve ser registrada separadamente caso ainda não tenha sido testada no APK.
 
