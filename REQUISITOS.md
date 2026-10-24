@@ -620,3 +620,45 @@ O aplicativo entregue na Sprint 3 é uma aplicação mobile funcional baseada em
 Os componentes de satélite, drones e inteligência artificial representam o ecossistema conceitual da solução, mas não são integrações reais nesta entrega.
 
 A prioridade desta Sprint é a estabilidade dos fluxos, consistência dos dados, experiência de uso e preparação para a evolução futura.
+
+---
+
+## 15. Adendo técnico da Sprint 4
+
+Este adendo preserva os requisitos históricos da Sprint 3 e registra as mudanças efetivamente preparadas para a versão Android final.
+
+### RF-026 — Filtro Moderado
+
+O indicador `Moderado` do Dashboard deve abrir a Central de Alertas exibindo exclusivamente ocorrências moderadas abertas. O mesmo filtro solicitado novamente deve substituir qualquer seleção manual anterior.
+
+### RF-027 — PDF de conformidade
+
+Após preparar a prévia, o usuário pode gerar localmente um PDF com métricas derivadas e resumo das ocorrências. O documento deve identificar explicitamente que os dados são simulados e permitir abrir o compartilhamento nativo quando disponível.
+
+### RF-028 — Tratamento do PDF
+
+A tela deve tratar geração em andamento, erro, nova tentativa e indisponibilidade do compartilhamento. A abertura do menu nativo não deve ser apresentada como confirmação de envio do arquivo.
+
+### RNF-014 — Identidade Android
+
+O aplicativo instalado deve usar o nome `Motiva Challenge`, ícones derivados do símbolo Motiva existente, orientação portrait e splash compatível com o Expo SDK 56.
+
+### RNF-015 — Pacote Android acadêmico
+
+O identificador proposto é `com.amomianag.motivachallenge`, sujeito a confirmação humana antes do primeiro build assinado. Esse identificador não declara que o protótipo seja um aplicativo oficial da concessionária.
+
+### RNF-016 — APK independente
+
+O perfil `preview` do EAS deve gerar um APK de distribuição interna, sem development client e sem dependência do Metro. A aprovação deste requisito depende de build, instalação e QA posteriores.
+
+### RNF-017 — Segurança acadêmica
+
+O backup Android deve permanecer desativado. Credenciais locais são destinadas exclusivamente à demonstração e não podem ser apresentadas como autenticação de produção.
+
+### RT-008 — Associação EAS
+
+O repositório não deve conter `projectId` fictício nem credenciais de assinatura. A associação à conta Expo e a geração do keystore exigem acompanhamento humano.
+
+### Evidência automatizada
+
+A preparação da Sprint 4 inclui testes unitários de seletores, filtros, métricas, transições, patches e composição HTML do relatório. Esses testes não substituem a validação manual do APK.

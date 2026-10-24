@@ -1,19 +1,40 @@
-# Pendências propostas — Sprint 4
+# Pendências e situação técnica — Sprint 4
 
-Esta lista separa evoluções futuras do escopo entregue na Sprint 3. Nenhum item abaixo deve ser interpretado como concluído.
+Esta lista diferencia o que já foi preparado no código do que ainda depende do APK, de contas externas ou de validação humana. A Sprint 4 não deve ser considerada concluída enquanto o APK final não for instalado e aprovado.
 
-## Prioridades funcionais
+## Preparado no código
 
-1. **PDF real de conformidade:** avaliar `expo-print` e `expo-sharing`, com geração, compartilhamento, cancelamento e fallback. A Sprint 3 manteve apenas uma prévia funcional para preservar estabilidade.
-2. **Testes automatizados essenciais:** introduzir testes unitários dos seletores, transições do reducer e validação dos patches; adicionar poucos testes de integração dos fluxos críticos.
-3. **Estratégia explícita para migração de persistência:** caso o formato evolua além da versão 1, migrar ou descartar patches antigos de maneira controlada.
-4. **Acessibilidade e dispositivos adicionais:** validar leitor de tela, escala de fonte, contraste e tamanhos menores/maiores além do Pixel 5.
+1. **Filtros:** indicador e filtro `Moderado` implementados; reaplicação do mesmo filtro tratada.
+2. **Robustez operacional:** bloqueio síncrono contra duplo acionamento muito rápido.
+3. **PDF real:** geração local e compartilhamento implementados com `expo-print` e `expo-sharing`; validação nativa ainda pendente.
+4. **Testes automatizados:** suíte mínima para seletores, transições, patches e HTML do relatório.
+5. **Identidade Android:** ícones e splash derivados do símbolo Motiva existente.
+6. **Configuração Android:** nome, package proposto, `versionCode` e backup configurados.
+7. **EAS:** perfil `preview` preparado para gerar APK de distribuição interna.
 
-## Refinamento planejado
+## Obrigatório antes da entrega
 
-- Refinar tipografia, hierarquia, espaçamentos, cards, cabeçalhos e navegação inferior sem mover regras de negócio de volta para as telas.
-- Atualizar as capturas do README depois do refinement visual, pois as imagens atuais representam a versão anterior do protótipo.
-- Revisar textos operacionais e datas com usuários da persona acadêmica.
+1. Confirmar humanamente o package acadêmico `com.amomianag.motivachallenge` antes do primeiro build assinado.
+2. Associar o projeto à conta Expo e registrar o `projectId` real gerado pelo EAS.
+3. Gerar o APK assinado sem development client.
+4. Instalar o APK e repetir os fluxos críticos descritos em `docs/TESTES_MANUAIS.md`.
+5. Validar PDF e compartilhamento no Android instalado.
+6. Validar ícone, máscara adaptativa, ícone temático e splash no build.
+7. Publicar o APK como asset de uma GitHub Release, sem adicioná-lo ao repositório.
+8. Produzir plano de negócio, vídeo e README final com links reais.
+
+## Recomendado
+
+- validar leitor de tela, escala de fonte, contraste e um segundo tamanho de dispositivo;
+- registrar a triagem dos avisos transitivos do `npm audit` a cada atualização do lockfile;
+- testar atualização do aplicativo preservando patches e sessão;
+- revisar textos operacionais e datas com usuários da persona acadêmica.
+
+## Opcional após a entrega
+
+- implementar migrações entre versões futuras da persistência; atualmente patches incompatíveis são descartados de forma controlada;
+- ampliar testes para componentes e navegação;
+- criar uma fila de repetição para falhas reais de escrita.
 
 ## Evoluções fora do protótipo atual
 
@@ -25,6 +46,10 @@ Esta lista separa evoluções futuras do escopo entregue na Sprint 3. Nenhum ite
 ## Riscos conhecidos
 
 - AsyncStorage é adequado à demonstração offline, mas não é um cofre para credenciais.
+- Somente dados e credenciais fictícios devem ser usados no protótipo.
 - Uma falha real de escrita mantém a ocorrência anterior e informa erro, porém não há fila de repetição automática.
 - A alternância `CENARIO_MOCK_ATIVO` é intencionalmente manual e voltada a QA; não existe seletor de cenários na interface final.
+- A auditoria npm ainda contém avisos transitivos em dependências do Expo, React Native e React Navigation; não foi demonstrada exploração no aplicativo e correções forçadas permanecem proibidas.
+- Após o alinhamento compatível com o SDK 56, `npm audit --omit=dev` registra 12 avisos: 1 crítico, 8 altos e 3 moderados. Os avisos permanecem transitivos, exceto a marcação do pacote `expo` causada por sua cadeia de CLI.
+- O Expo Doctor aprova 21 de 22 verificações. O alerta restante é a regressão de memória do Hermes V1 incluído no React Native 0.85.3; a correção indicada pela ferramenta exige Expo SDK 57, fora do escopo de estabilidade desta Sprint.
 

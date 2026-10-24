@@ -120,12 +120,7 @@ export default function DashboardTela({ navigation, aoSair }) {
                       ]}
                       onPress={() =>
                         navigation.navigate("Alertas", {
-                          filtroInicial:
-                            item.id === "critico"
-                              ? "Crítico"
-                              : item.id === "atencao"
-                                ? "Atenção"
-                                : "Todos",
+                          filtroInicial: item.rotulo,
                         })
                       }
                     >

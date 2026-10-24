@@ -2,6 +2,9 @@
 
 # dependencies
 node_modules/
+.jest-cache/
+*.apk
+*.aab
 
 # Expo
 .expo/

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "motiva-prototipo",
+    "name": "Motiva Challenge",
     "slug": "motiva-prototipo",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -10,8 +10,11 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.amomianag.motivachallenge",
+      "versionCode": 1,
+      "allowBackup": false,
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#5D20F5",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -19,6 +22,19 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-sharing",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#5D20F5",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 320,
+          "resizeMode": "contain"
+        }
+      ],
+      "expo-font"
+    ]
   }
 }

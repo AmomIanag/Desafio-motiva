@@ -121,3 +121,57 @@ Ambiente principal de validação: Expo SDK 56, Expo Go e emulador Android Pixel
 - **Esperado:** manter Relatórios funcional mesmo sem PDF.
 - **Obtido:** prévia de conformidade funcional; PDF real registrado para a Sprint 4.
 - **Status:** **NÃO APLICÁVEL NESTA SPRINT**.
+
+---
+
+## Verificações técnicas — preparação da Sprint 4
+
+Esta seção registra somente verificações locais realizadas durante a preparação técnica. Os resultados manuais anteriores continuam sendo evidências da Sprint 3 em Expo Go e não comprovam o APK final.
+
+### Testes automatizados
+
+- **Ambiente:** Jest 29.7.0 com `jest-expo` 56.0.6.
+- **Comando:** `npm test -- --runInBand`.
+- **Cobertura funcional:** seletores de abertas, contagens por criticidade, filtros, busca por ID, métricas, série mensal, transições válidas e inválidas, patches e HTML do relatório.
+- **Resultado:** 3 suítes e 18 testes aprovados; 0 snapshots.
+- **Status:** **PASSOU EM AMBIENTE LOCAL**.
+
+### Filtros da Central de Alertas
+
+- O filtro `Moderado` foi adicionado e o Dashboard passou a solicitá-lo diretamente.
+- O parâmetro inicial é consumido e limpo após a aplicação, permitindo solicitar o mesmo filtro novamente depois de uma seleção manual diferente.
+- Os seletores correspondentes estão cobertos por testes unitários.
+- **Status manual no APK:** **PENDENTE**.
+
+### PDF real
+
+- A geração local foi implementada com `expo-print` e o compartilhamento com `expo-sharing`.
+- A composição HTML, o escape de conteúdo e a indicação de dados simulados estão cobertos por testes unitários.
+- A prévia textual anterior foi preservada.
+- **Geração e compartilhamento no APK:** **PENDENTE**.
+
+### Compatibilidade e bundle local
+
+- `npx expo install --check`: dependências alinhadas ao Expo SDK 56.
+- `npx expo-doctor`: 21 de 22 verificações aprovadas.
+- Alerta remanescente: regressão de memória do Hermes V1 corrigida apenas em React Native/Expo de geração posterior; a Sprint preserva Expo SDK 56 e deve observar memória durante o QA do APK.
+- `npx expo export --platform android --output-dir dist`: bundle Android e bytecode Hermes gerados com sucesso, 947 módulos processados.
+- O primeiro export falhou por permissão do diretório temporário do sandbox; a repetição fora dessa restrição concluiu normalmente.
+- **APK gerado:** não.
+
+### Checklist pendente no APK
+
+- instalação limpa e abertura sem Metro/Expo Go;
+- cadastro, login, restauração de sessão e logout;
+- Dashboard e os cinco filtros de Alertas;
+- Mapa → Detalhe → Drone;
+- agendamento, envio, início e resolução;
+- sincronização entre telas;
+- persistência após encerramento forçado;
+- restauração do baseline;
+- localização permitida e negada;
+- geração, cancelamento e compartilhamento do PDF;
+- nome, ícone adaptativo, ícone temático e splash;
+- funcionamento offline.
+
+Nenhum item desta lista deve ser marcado como aprovado antes da instalação do APK final.

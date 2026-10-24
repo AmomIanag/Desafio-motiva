@@ -10,6 +10,11 @@ import React, {
 
 import { cenariosMock, ocorrenciasIniciais } from "../data/mockData";
 import {
+  aplicarPatches,
+  criarPatch,
+  criarTransicao,
+} from "../domain/ocorrenciaState";
+import {
   buscarAlteracoesOcorrencias,
   removerAlteracoesOcorrencias,
   salvarAlteracoesOcorrencias,
@@ -28,40 +33,6 @@ const estadoInicial = {
   erro: null,
   feedback: null,
 };
-
-function aplicarPatches(baseline, alteracoes) {
-  const statusValidos = [
-    "nova",
-    "agendada",
-    "equipe_enviada",
-    "em_atendimento",
-    "resolvida",
-  ];
-
-  return baseline.map((ocorrencia) => {
-    const patch = alteracoes[ocorrencia.id];
-
-    if (!patch || typeof patch !== "object") {
-      return ocorrencia;
-    }
-
-    return {
-      ...ocorrencia,
-      status: statusValidos.includes(patch.status)
-        ? patch.status
-        : ocorrencia.status,
-      resolvidaEm:
-        typeof patch.resolvidaEm === "string" || patch.resolvidaEm === null
-          ? patch.resolvidaEm
-          : ocorrencia.resolvidaEm,
-      equipe:
-        patch.equipe === null ||
-        (typeof patch.equipe === "object" && !Array.isArray(patch.equipe))
-          ? patch.equipe
-          : ocorrencia.equipe,
-    };
-  });
-}
 
 function reducer(estado, acao) {
   switch (acao.type) {
@@ -122,75 +93,10 @@ function reducer(estado, acao) {
   }
 }
 
-function criarTransicao(ocorrencia, evento) {
-  const agora = new Date().toISOString();
-
-  if (evento === "AGENDAR_EQUIPE") {
-    if (ocorrencia.criticidade !== "atencao" || ocorrencia.status !== "nova") {
-      return null;
-    }
-
-    return {
-      ...ocorrencia,
-      status: "agendada",
-      equipe: {
-        nome: "Equipe programada",
-        agendadaPara: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-        acionadaEm: null,
-      },
-    };
-  }
-
-  if (evento === "ENVIAR_EQUIPE") {
-    const podeEnviar =
-      (ocorrencia.criticidade === "critico" && ocorrencia.status === "nova") ||
-      ocorrencia.status === "agendada";
-
-    if (!podeEnviar) {
-      return null;
-    }
-
-    return {
-      ...ocorrencia,
-      status: "equipe_enviada",
-      equipe: {
-        nome: ocorrencia.equipe?.nome ?? "Equipe operacional",
-        agendadaPara: ocorrencia.equipe?.agendadaPara ?? null,
-        acionadaEm: agora,
-      },
-    };
-  }
-
-  if (evento === "INICIAR_ATENDIMENTO") {
-    if (ocorrencia.status !== "equipe_enviada") {
-      return null;
-    }
-
-    return { ...ocorrencia, status: "em_atendimento" };
-  }
-
-  if (evento === "RESOLVER_OCORRENCIA") {
-    if (ocorrencia.status !== "em_atendimento") {
-      return null;
-    }
-
-    return { ...ocorrencia, status: "resolvida", resolvidaEm: agora };
-  }
-
-  return null;
-}
-
-function criarPatch(ocorrencia) {
-  return {
-    status: ocorrencia.status,
-    resolvidaEm: ocorrencia.resolvidaEm,
-    equipe: ocorrencia.equipe,
-  };
-}
-
 export function OcorrenciasProvider({ children }) {
   const [estado, dispatch] = useReducer(reducer, estadoInicial);
   const falhaMockConsumida = useRef(false);
+  const operacaoEmAndamento = useRef(false);
 
   const baseline = useMemo(
     () => cenariosMock[CENARIO_MOCK_ATIVO] ?? ocorrenciasIniciais,
@@ -233,7 +139,7 @@ export function OcorrenciasProvider({ children }) {
 
   const executarTransicao = useCallback(
     async (id, evento) => {
-      if (estado.processandoId) {
+      if (operacaoEmAndamento.current || estado.processandoId) {
         return false;
       }
 
@@ -257,6 +163,7 @@ export function OcorrenciasProvider({ children }) {
         return false;
       }
 
+      operacaoEmAndamento.current = true;
       dispatch({ type: "PROCESSAR", id });
       const alteracoes = {
         ...estado.alteracoes,
@@ -278,12 +185,19 @@ export function OcorrenciasProvider({ children }) {
           mensagem: "Não foi possível salvar a alteração. Tente novamente.",
         });
         return false;
+      } finally {
+        operacaoEmAndamento.current = false;
       }
     },
     [estado.alteracoes, estado.ocorrencias, estado.processandoId],
   );
 
   const restaurarDemonstracao = useCallback(async () => {
+    if (operacaoEmAndamento.current) {
+      return false;
+    }
+
+    operacaoEmAndamento.current = true;
     dispatch({ type: "PROCESSAR", id: "restaurar" });
 
     try {
@@ -296,6 +210,8 @@ export function OcorrenciasProvider({ children }) {
         mensagem: "Não foi possível restaurar os dados da demonstração.",
       });
       return false;
+    } finally {
+      operacaoEmAndamento.current = false;
     }
   }, []);
 

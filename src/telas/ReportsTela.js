@@ -21,6 +21,7 @@ import {
   selecionarMetricasRelatorios,
   selecionarSerieMensal,
 } from "../domain/ocorrenciaSelectors";
+import { gerarECompartilharRelatorioPdf } from "../services/relatorioPdf";
 import {
   colors,
   radius,
@@ -33,6 +34,11 @@ import {
 export default function ReportsTela({ aoSair }) {
   const [resumoPreparado, setResumoPreparado] = useState(false);
   const [confirmarRestauracao, setConfirmarRestauracao] = useState(false);
+  const [estadoPdf, setEstadoPdf] = useState({
+    gerando: false,
+    mensagem: null,
+    erro: false,
+  });
   const {
     ocorrencias,
     carregando,
@@ -68,6 +74,36 @@ export default function ReportsTela({ aoSair }) {
     if (restaurado) {
       setConfirmarRestauracao(false);
       setResumoPreparado(false);
+      setEstadoPdf({ gerando: false, mensagem: null, erro: false });
+    }
+  }
+
+  async function gerarPdf() {
+    if (estadoPdf.gerando) {
+      return;
+    }
+
+    setEstadoPdf({ gerando: true, mensagem: null, erro: false });
+
+    try {
+      const resultado = await gerarECompartilharRelatorioPdf({
+        ocorrencias,
+        metricas,
+      });
+
+      setEstadoPdf({
+        gerando: false,
+        erro: false,
+        mensagem: resultado.compartilhamentoDisponivel
+          ? "PDF gerado. O menu de compartilhamento foi aberto; o destino escolhido não é confirmado pelo aplicativo."
+          : "PDF gerado, mas o compartilhamento não está disponível neste dispositivo.",
+      });
+    } catch {
+      setEstadoPdf({
+        gerando: false,
+        erro: true,
+        mensagem: "Não foi possível gerar ou abrir o PDF. Tente novamente.",
+      });
     }
   }
 
@@ -205,13 +241,31 @@ export default function ReportsTela({ aoSair }) {
             </PrimaryButton>
 
             {resumoPreparado ? (
-              <View style={styles.previa}>
-                <Text style={styles.tituloPrevia}>Prévia do relatório</Text>
-                <Text style={styles.textoPrevia}>
-                  {metricas.total} ocorrências monitoradas, {metricas.resolvidas}{" "}
-                  resolvidas e taxa de resolução de {metricas.taxaResolucao}%.
-                </Text>
-              </View>
+              <>
+                <View style={styles.previa}>
+                  <Text style={styles.tituloPrevia}>Prévia do relatório</Text>
+                  <Text style={styles.textoPrevia}>
+                    {metricas.total} ocorrências monitoradas, {metricas.resolvidas}{" "}
+                    resolvidas e taxa de resolução de {metricas.taxaResolucao}%.
+                  </Text>
+                  <Text style={styles.avisoSimulacao}>
+                    Documento acadêmico com dados operacionais simulados.
+                  </Text>
+                </View>
+
+                <FeedbackBanner
+                  mensagem={estadoPdf.mensagem}
+                  tipo={estadoPdf.erro ? "erro" : "sucesso"}
+                />
+
+                <PrimaryButton onPress={gerarPdf} disabled={estadoPdf.gerando}>
+                  {estadoPdf.gerando
+                    ? "Gerando PDF..."
+                    : estadoPdf.erro
+                      ? "Tentar gerar PDF novamente"
+                      : "Gerar e compartilhar PDF"}
+                </PrimaryButton>
+              </>
             ) : null}
           </>
         )}
@@ -441,6 +495,12 @@ const styles = StyleSheet.create({
     ...typography.meta,
     color: colors.textSecondary,
     marginTop: 5,
+  },
+  avisoSimulacao: {
+    ...typography.meta,
+    color: colors.brandDark,
+    fontWeight: "600",
+    marginTop: 8,
   },
   linkRestaurar: {
     alignItems: "center",

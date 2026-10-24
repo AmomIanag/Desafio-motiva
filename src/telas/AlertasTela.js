@@ -16,7 +16,7 @@ import { useOcorrencias } from "../context/OcorrenciasContext";
 import { selecionarOcorrenciasPorFiltro } from "../domain/ocorrenciaSelectors";
 import { colors, radius, spacing, typography } from "../theme";
 
-const FILTROS = ["Todos", "Crítico", "Atenção", "Resolvido"];
+const FILTROS = ["Todos", "Crítico", "Atenção", "Moderado", "Resolvido"];
 
 function obterAcao(ocorrencia, acoes) {
   if (ocorrencia.status === "resolvida") {
@@ -67,8 +67,9 @@ export default function AlertasTela({ navigation, route, aoSair }) {
   useEffect(() => {
     if (route?.params?.filtroInicial) {
       setFiltro(route.params.filtroInicial);
+      navigation.setParams({ filtroInicial: undefined });
     }
-  }, [route?.params?.filtroInicial]);
+  }, [navigation, route?.params?.filtroInicial]);
 
   const alertasFiltrados = useMemo(
     () => selecionarOcorrenciasPorFiltro(ocorrencias, filtro),

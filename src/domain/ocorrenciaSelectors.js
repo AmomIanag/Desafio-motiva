@@ -49,6 +49,12 @@ export function selecionarOcorrenciasPorFiltro(ocorrencias, filtro) {
     );
   }
 
+  if (filtro === "Moderado") {
+    return ocorrencias.filter(
+      (item) => item.criticidade === "moderado" && item.status !== "resolvida",
+    );
+  }
+
   return ocorrencias;
 }
 
