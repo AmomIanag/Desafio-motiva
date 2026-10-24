@@ -6,6 +6,19 @@ O projeto foi desenvolvido como uma solução acadêmica para simular a identifi
 
 ---
 
+## 🎬 Entrega final — Sprint 4
+
+**Vídeo demonstrativo (pitch de até 5 minutos):** [▶ Assistir ao vídeo demonstrativo](urlvideo).  
+
+**APK Android — Motiva Challenge v1.0.0:** Gerado por Expo EAS Build e instalado no emulador Android Pixel 5. **Link de download no GitHub Releases:** [Baixar APK v1.0.0](https://github.com/AmomIanag/Desafio-motiva/releases/tag/v1.0.0) 
+
+**Plano de negócio:** [Consultar documento completo](./docs/PLANO_DE_NEGOCIO.md).  
+**Repositório do projeto:** [GitHub — Desafio-motiva](https://github.com/AmomIanag/Desafio-motiva).
+
+> **Nota:** o APK é independente do Expo Go. O monitoramento de satélites/drones, ocorrências e projeções utiliza dados simulados neste protótipo acadêmico.
+
+---
+
 ## 👥 Integrantes do Grupo
 
 | Integrante | RM |
@@ -123,6 +136,15 @@ Por meio do aplicativo, o supervisor pode consultar o Dashboard, acompanhar o ma
 
 ---
 
+## 🔄 Evolução das quatro Sprints
+
+- **Sprint 1 — Concepção:** definição do problema de conservação rodoviária, proposta de solução e perfil do usuário.
+- **Sprint 2 — Prototipação:** desenvolvimento do protótipo visual no Figma e planejamento dos fluxos da aplicação mobile.
+- **Sprint 3 — Integração funcional:** implementação da navegação, autenticação, domínio de ocorrências, operações e persistência compartilhada.
+- **Sprint 4 — Aplicativo Android e viabilidade:** correções finais, relatório PDF, testes automatizados, identidade Android, APK independente e plano de negócio.
+
+---
+
 ## ✅ Status da Sprint 3
 
 A Sprint 3 consolida o protótipo anterior em uma aplicação funcional completa, com fluxos integrados e dados mockados compartilhados entre as telas.
@@ -162,20 +184,27 @@ A Sprint 3 consolida o protótipo anterior em uma aplicação funcional completa
 
 ---
 
-## Status da Sprint 4 — Versão Final e APK
+## ✅ Status da Sprint 4 — Versão Final e APK
 
 ### Implementações realizadas
-- ✅ Correção dos filtros.
-- ✅ Geração de relatórios em PDF.
-- ✅ 18 testes automatizados aprovados.
-- ✅ Identidade visual Android.
-- ✅ Configuração para geração do APK.
-- ✅ Elaboração do plano de negócio.
+
+- ✅ Correção dos filtros, incluindo **Moderado** e reaplicação da seleção vinda do Dashboard.
+- ✅ Proteção contra acionamentos operacionais duplicados.
+- ✅ Geração local de **PDF de conformidade** e integração ao compartilhamento nativo Android.
+- ✅ **18 testes automatizados aprovados** (seletores, transições, patches e geração do HTML do relatório).
+- ✅ Personalização de ícone, ícone adaptativo e splash Android.
+- ✅ Configuração do **Expo EAS Build**, com perfil `preview` para gerar APK instalável.
+- ✅ APK **v1.0.0 gerado e instalado no emulador Pixel 5** sem depender do Expo Go.
+- ✅ Elaboração do plano de negócio para o cenário B2B.
 
 ### Validação e entrega
-- ⏳ Publicação do APK no GitHub Releases.
-- ⏳ Testes do APK instalado.
-- ⏳ Publicação do vídeo demonstrativo.
+
+- ✅ Abertura e verificação funcional inicial do APK no emulador Android.
+- ⏳ Publicação do arquivo `.apk` como anexo no **GitHub Releases**.
+- ⏳ Publicação do **vídeo demonstrativo** no YouTube, em modo não listado.
+- ⏳ Inclusão dos links finais neste README e no arquivo `.txt` exigido na entrega.
+
+> O código e os testes automatizados foram verificados; a validação de PDF/compartilhamento no Android deve ser registrada separadamente caso ainda não tenha sido testada no APK.
 
 ---
 
@@ -189,7 +218,9 @@ O modelo de negócio contempla licenciamento B2B,
 implantação e serviços de monitoramento para
 concessionárias de infraestrutura.
 
-📄 [Consultar o Plano de Negócio completo](docs/PLANO_DE_NEGOCIO.md)
+📄 [Consultar o Plano de Negócio completo](./docs/PLANO_DE_NEGOCIO.md)
+
+---
 
 ## 🧱 Arquitetura da aplicação
 
@@ -258,6 +289,8 @@ Em caso de JSON inválido, versão incompatível ou falha de leitura, o aplicati
 | **Expo Location** | Permissão/localização do dispositivo |
 | **Expo Vector Icons** | Ícones da interface |
 | **Context API + useReducer** | Estado compartilhado das ocorrências |
+| **Expo Print / Expo Sharing** | Geração e compartilhamento de relatórios PDF |
+| **Expo Splash Screen** | Tela de abertura nativa Android |
 
 ### Ferramentas
 
@@ -266,6 +299,8 @@ Em caso de JSON inválido, versão incompatível ou falha de leitura, o aplicati
 | **Android Studio** | Emulador Android Pixel 5 |
 | **Figma** | Protótipo visual original |
 | **Git / GitHub** | Versionamento e entrega |
+| **Expo EAS Build** | Compilação e assinatura do APK Android |
+| **Jest / jest-expo** | Testes automatizados de lógica e relatórios |
 
 ---
 
@@ -287,7 +322,7 @@ Em caso de JSON inválido, versão incompatível ou falha de leitura, o aplicati
 | **RF-012** | Permitir evolução coerente do status operacional. |
 | **RF-013** | Refletir alterações de uma ocorrência nas demais telas. |
 | **RF-014** | Exibir métricas operacionais e indicadores simulados. |
-| **RF-015** | Preparar uma prévia de relatório de conformidade. |
+| **RF-015** | Preparar prévia e gerar relatório de conformidade em PDF para compartilhamento. |
 | **RF-016** | Solicitar e tratar permissão de localização. |
 | **RF-017** | Persistir alterações operacionais após reinício do aplicativo. |
 | **RF-018** | Exibir estados de loading, vazio, erro, retry e item inexistente. |
@@ -333,7 +368,6 @@ A identidade atual utiliza:
 
 ## 🖼️ Capturas de tela
 
-
 ### Login
 
 ![Tela de login](./assets/prints/login.png)
@@ -354,7 +388,7 @@ A identidade atual utiliza:
 
 ![Detalhe da ocorrência](./assets/prints/detalhe-ocorrencia.png)
 
-### Imagem capturada pelo drone
+### Imagem simulada de inspeção por drone
 
 ![Imagem do drone](./assets/prints/drone.png)
 
@@ -387,7 +421,8 @@ motiva-prototipo/
 │
 ├── docs/
 │   ├── TESTES_MANUAIS.md
-│   └── PENDENCIAS_SPRINT_4.md
+│   ├── PENDENCIAS_SPRINT_4.md
+│   └── PLANO_DE_NEGOCIO.md
 │
 ├── src/
 │   ├── components/
@@ -396,11 +431,13 @@ motiva-prototipo/
 │   ├── domain/
 │   ├── navegacao/
 │   ├── storage/
+│   ├── services/
 │   ├── telas/
 │   └── theme.js
 │
 ├── App.js
 ├── app.json
+├── eas.json
 ├── index.js
 ├── package.json
 ├── package-lock.json
@@ -410,7 +447,23 @@ motiva-prototipo/
 
 ---
 
-## 🚀 Como executar o projeto
+## 📱 Instalação do APK Android
+
+1. Baixe o arquivo `.apk` na seção **Entrega final — Sprint 4**, no início deste README (link disponibilizado após publicação no GitHub Releases).
+2. Transfira o APK para um dispositivo Android ou instale diretamente no emulador.
+3. Se necessário, permita a instalação de aplicativos dessa origem nas configurações do Android.
+4. Abra o aplicativo **Motiva Challenge** pela lista de aplicativos. **Não é necessário instalar o Expo Go.**
+5. Utilize credenciais fictícias no cadastro, pois a autenticação deste protótipo é local e acadêmica.
+
+Para instalação via Android Debug Bridge (ADB), depois de baixar o arquivo:
+
+```bash
+adb install -r motiva-challenge-v1.0.0.apk
+```
+
+---
+
+## 🚀 Como executar o código-fonte
 
 ### Pré-requisitos
 
@@ -421,7 +474,7 @@ motiva-prototipo/
 ### Instalação
 
 ```bash
-git clone URL_DO_REPOSITORIO
+git clone https://github.com/AmomIanag/Desafio-motiva.git motiva-prototipo
 cd motiva-prototipo
 npm install
 ```
@@ -466,6 +519,10 @@ Entre as principais:
 - `@react-navigation/bottom-tabs`;
 - `@react-native-async-storage/async-storage`;
 - `expo-location`;
+- `expo-print`;
+- `expo-sharing`;
+- `expo-splash-screen`;
+- `expo-font`;
 - `@expo/vector-icons`;
 - `react-native-safe-area-context`;
 - `react-native-screens`.
@@ -498,7 +555,7 @@ O projeto utiliza dados mockados para representar:
 - métricas;
 - indicadores estratégicos e previsão simulada.
 
-Não existe dependência de APIs externas para o funcionamento da Sprint 3.
+A demonstração local não depende de APIs externas de monitoramento. Na Sprint 4, o APK também pode ser executado sem o servidor de desenvolvimento.
 
 O baseline contém **9 ocorrências**, sendo:
 
@@ -542,6 +599,7 @@ As mudanças são compartilhadas entre as telas.
 Ocorrências
 → Métricas derivadas
 → Prévia de conformidade
+→ Gerar PDF → Compartilhar
 ```
 
 ---
@@ -552,7 +610,9 @@ Os testes da Sprint 3 estão documentados em:
 
 [`docs/TESTES_MANUAIS.md`](./docs/TESTES_MANUAIS.md)
 
-Entre os cenários cobertos:
+Na Sprint 4, também foram aprovados **18 testes automatizados em 3 suítes**, cobrindo regras de domínio, transições, patches e a estrutura do HTML utilizado na geração do PDF.
+
+Entre os cenários manuais documentados na Sprint 3:
 
 - cadastro e login;
 - restauração de sessão;
@@ -567,21 +627,18 @@ Entre os cenários cobertos:
 
 ---
 
-## 🚧 Pendências para Sprint 4
+## 🚧 Evoluções futuras (além da Sprint 4)
 
-As pendências estão documentadas em:
+O histórico de pendências e decisões técnicas pode ser consultado em [`docs/PENDENCIAS_SPRINT_4.md`](./docs/PENDENCIAS_SPRINT_4.md).
 
-[`docs/PENDENCIAS_SPRINT_4.md`](./docs/PENDENCIAS_SPRINT_4.md)
+Possíveis evoluções de produto:
 
-Entre as possíveis evoluções:
-
-- geração real de PDF;
-- integração com APIs/backend;
-- autenticação apropriada para produção;
-- testes automatizados;
-- dados reais de satélite/drone;
-- mapa real;
-- evolução da camada de análise inteligente.
+- integração com APIs corporativas e backend;
+- autenticação segura para ambiente de produção;
+- dados reais de satélite e drones;
+- mapa geográfico conectado a serviços externos;
+- mecanismos reais de análise e previsão de crescimento da vegetação;
+- sincronização multiusuário e monitoramento operacional em tempo real.
 
 ---
 
@@ -591,7 +648,7 @@ Este projeto possui finalidade acadêmica e utiliza dados simulados.
 
 O `AsyncStorage` é utilizado para demonstrar persistência local de cadastro, sessão e operações. Em um produto real, senhas não devem ser armazenadas dessa forma sem criptografia e mecanismos adequados de autenticação.
 
-A tela de Relatórios prepara uma prévia de conformidade baseada nos dados atuais, mas **não gera um arquivo PDF** nesta Sprint.
+Na Sprint 4, a tela de Relatórios mantém a prévia e passou a permitir **gerar um PDF local** e abrir o compartilhamento nativo do Android. O conteúdo reflete as ocorrências simuladas do protótipo.
 
 Satélite, drones, previsão inteligente e demais fontes externas são representados conceitualmente por mocks. O aplicativo não depende desses serviços para executar a demonstração.
 
