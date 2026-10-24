@@ -217,7 +217,7 @@ O modelo de negócio contempla licenciamento B2B,
 implantação e serviços de monitoramento para
 concessionárias de infraestrutura.
 
-📄 [Consultar o Plano de Negócio completo](./docs/PLANO_DE_NEGOCIO.md)
+📄 [Consultar o Plano de Negócio completo](./docs/PLANO_DE_NEGOCIO_MOTIVA_CHALLENGE.md)
 
 ---
 
@@ -421,7 +421,7 @@ motiva-prototipo/
 ├── docs/
 │   ├── TESTES_MANUAIS.md
 │   ├── PENDENCIAS_SPRINT_4.md
-│   └── PLANO_DE_NEGOCIO.md
+│   └── PLANO_DE_NEGOCIO_MOTIVA_CHALLENGE.md
 │
 ├── src/
 │   ├── components/
@@ -448,7 +448,7 @@ motiva-prototipo/
 
 ## 📱 Instalação do APK Android
 
-1. Baixe o arquivo `.apk` na seção **Entrega final — Sprint 4**, no início deste README (link disponibilizado após publicação no GitHub Releases).
+1. Baixe o arquivo `.apk` na seção **Entrega final — Sprint 4**, no início deste README.
 2. Transfira o APK para um dispositivo Android ou instale diretamente no emulador.
 3. Se necessário, permita a instalação de aplicativos dessa origem nas configurações do Android.
 4. Abra o aplicativo **Motiva Challenge** pela lista de aplicativos. **Não é necessário instalar o Expo Go.**
